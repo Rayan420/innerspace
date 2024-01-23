@@ -54,6 +54,7 @@ class FirebaseUserRepo implements UserRepository {
       await userCollection.doc(myUser.userId).get().then((doc) {
         if (doc.exists) {
           userExists = true;
+          print("user exists - firebase user repo");
         }
       });
       if (!userExists) {
