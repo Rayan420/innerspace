@@ -15,6 +15,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       emit(SignUpProcess());
       try {
         MyUser user = await _userRepository.signUp(event.user, event.password);
+        print("user signed up - sign up bloc");
         await _userRepository.setUserData(user);
         print("user data set - sign up bloc");
         emit(SignUpSuccess());
