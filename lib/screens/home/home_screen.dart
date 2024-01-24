@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:innerspace/bloc/sign_in_bloc/sign_in_bloc.dart';
@@ -16,7 +15,7 @@ class HomeScreen extends StatelessWidget {
               onPressed: () {
                 context.read<SignInBloc>().add(const SignOutRequired());
               },
-              icon: Icon(Icons.login))
+              icon: const Icon(Icons.login))
         ],
       ),
     );

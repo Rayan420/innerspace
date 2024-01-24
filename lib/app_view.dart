@@ -5,7 +5,6 @@ import 'package:innerspace/bloc/sign_in_bloc/sign_in_bloc.dart';
 import 'package:innerspace/screens/home/home_screen.dart';
 import 'package:innerspace/screens/auth/welcome_screen.dart';
 import 'package:innerspace/theme.dart';
-import 'package:user_repository/user_repository.dart';
 
 class AppView extends StatelessWidget {
   final String flavor;
@@ -25,7 +24,7 @@ class AppView extends StatelessWidget {
                 userRepository:
                     context.read<AuthenticationBloc>().userRepository,
               ),
-              child: HomeScreen(),
+              child: const HomeScreen(),
             );
           } else {
             return const WelcomeScreen();

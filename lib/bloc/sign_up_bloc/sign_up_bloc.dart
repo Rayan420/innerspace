@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'sign_up_event.dart';
@@ -15,9 +16,13 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       emit(SignUpProcess());
       try {
         MyUser user = await _userRepository.signUp(event.user, event.password);
-        print("user signed up - sign up bloc");
+        if (kDebugMode) {
+          print("user signed up - sign up bloc");
+        }
         await _userRepository.setUserData(user);
-        print("user data set - sign up bloc");
+        if (kDebugMode) {
+          print("user data set - sign up bloc");
+        }
         emit(SignUpSuccess());
       } catch (e) {
         emit(SignUpFailure());

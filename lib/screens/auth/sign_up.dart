@@ -65,6 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     setState(() {
                       passwordStrength = estimatePasswordStrength(val!);
                     });
+                    return null;
                   },
                   suffixIcon: IconButton(
                     onPressed: () {
@@ -110,7 +111,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               // Password Strength Indicator
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width * 0.9,
                 child: LinearProgressIndicator(
                   value: passwordStrength,
@@ -126,7 +127,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 visible: !signUpRequired,
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.5,
-                  child: ElevatedButton(
+                  child: TextButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         MyUser myUser = MyUser.empty;
