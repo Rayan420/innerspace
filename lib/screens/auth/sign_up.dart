@@ -120,7 +120,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               // Use Visibility widget to conditionally show button or CircularProgressIndicator
               Visibility(
                 visible: !signUpRequired,
@@ -150,12 +150,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                     style: ElevatedButton.styleFrom(
                       elevation: 3.0,
-                      primary: Theme.of(context).colorScheme.primary,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(60),
                       ),
                     ),
-                    child: Padding(
+                    child: const Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 25, vertical: 5),
                       child: Text(
