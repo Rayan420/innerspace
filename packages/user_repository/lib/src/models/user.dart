@@ -5,27 +5,22 @@ class MyUser extends Equatable {
   // user object properties
   final String userId;
   final String email;
-  final String name;
 
 // user object constructor
   const MyUser({
     required this.userId,
     required this.email,
-    required this.name,
   });
 
-  static const empty = MyUser(userId: '', email: '', name: '');
+  static const empty = MyUser(userId: '', email: '');
 
   MyUser copyWith({
     String? userId,
     String? email,
-    String? name,
-    String? username,
   }) {
     return MyUser(
       userId: userId ?? this.userId,
       email: email ?? this.email,
-      name: name ?? this.name,
     );
   }
 
@@ -33,7 +28,6 @@ class MyUser extends Equatable {
     return MyUserEntity(
       userId: userId,
       email: email,
-      name: name,
     );
   }
 
@@ -41,10 +35,9 @@ class MyUser extends Equatable {
     return MyUser(
       userId: entity.userId,
       email: entity.email,
-      name: entity.name,
     );
   }
 
   @override
-  List<Object?> get props => [userId, email, name];
+  List<Object?> get props => [userId, email];
 }

@@ -63,17 +63,17 @@ android {
         development {
             dimension "default"
             applicationIdSuffix ".dev"
-            resValue "string", "app_name", "chatterbox Dev"
+            resValue "string", "app_name", "InnerSpce Dev"
         }
         production {
             dimension "default"
-            resValue "string", "app_name", "chatterbox"
+            resValue "string", "app_name", "InnerSpce"
             applicationIdSuffix ""
         }
         staging {
             dimension "default"
             applicationIdSuffix ".staging"
-            resValue "string", "app_name", "chatterbox Staging"
+            resValue "string", "app_name", "InnerSpce Staging"
         }
     }
 }

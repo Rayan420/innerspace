@@ -18,6 +18,10 @@ dependencies:
   cupertino_icons: ^1.0.6
   email_validator: ^2.0.1
   password_strength: ^0.2.0
+  google_fonts: ^6.1.0
+  liquid_swipe: ^3.1.0
+  smooth_page_indicator: ^1.1.0
+  shared_preferences: ^2.0.8
 
   user_repository: 
     path: packages/user_repository
@@ -32,5 +36,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-assets:
-  - assets/
+  assets:
+    - assets/
+    - assets/images/

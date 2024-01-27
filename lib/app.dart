@@ -7,8 +7,10 @@ import 'package:user_repository/user_repository.dart';
 class App extends StatelessWidget {
   final String flavor;
   final UserRepository userRepository;
+  final bool isFirstTime;
 
-  const App(this.userRepository, {Key? key, required this.flavor})
+  const App(this.userRepository,
+      {Key? key, required this.flavor, required this.isFirstTime})
       : super(key: key);
 
   @override
@@ -16,7 +18,10 @@ class App extends StatelessWidget {
     return RepositoryProvider<AuthenticationBloc>(
       create: (context) => AuthenticationBloc(userRepository: userRepository),
       // ignore: prefer_const_constructors
-      child: AppView(flavor: flavor),
+      child: AppView(
+        flavor: flavor,
+        isFirstTime: isFirstTime,
+      ),
     );
   }
 }
