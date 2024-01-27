@@ -1,6 +1,4 @@
-
 import 'package:flutter/material.dart';
-import 'package:innerspace/theme.dart';
 
 class MyTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -44,18 +42,7 @@ class MyTextField extends StatelessWidget {
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.transparent),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(color: darkTheme.colorScheme.primary),
-        ),
-        fillColor: Colors.grey.shade200,
-        filled: true,
         hintText: hintText,
-        hintStyle: TextStyle(color: Colors.grey[500]),
         errorText: errorMsg,
       ),
     );
