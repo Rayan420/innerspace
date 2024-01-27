@@ -8,7 +8,6 @@ import 'package:innerspace/common_widgets/form_header_widget.dart';
 import 'package:innerspace/constants/sizes.dart';
 import 'package:innerspace/constants/strings.dart';
 import 'package:innerspace/screens/authentication/components/my_text_field.dart';
-import 'package:innerspace/screens/authentication/login/login_screen.dart';
 import 'package:password_strength/password_strength.dart';
 import 'package:user_repository/user_repository.dart';
 
