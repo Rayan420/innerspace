@@ -32,6 +32,7 @@ class _LogInState extends State<LogIn> {
         if (state is SignInSuccess) {
           setState(() {
             signInRequired = false;
+            Navigator.pop(context);
           });
         } else if (state is SignInProcess) {
           setState(() {
@@ -136,7 +137,7 @@ class _LogInState extends State<LogIn> {
                                             passwordController.text));
                                   }
                                 },
-                                child: Text(tSignUp.toUpperCase()),
+                                child: Text(tLogin.toUpperCase()),
                               ),
                             ),
                           ),

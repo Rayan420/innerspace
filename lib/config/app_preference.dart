@@ -1,16 +1,16 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Preference {
-// a function to check if the app is bneing launched for the first time
-  Future<bool> checkFirstTimeLaunch() async {
+// a function to check if user has onboarded
+  Future<bool> hasOnboarded() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isFirstTime = prefs.getBool('first_time_launch') ?? true;
+    bool hasOnboarded = prefs.getBool('has_onboarded') ?? false;
+    return hasOnboarded;
+  }
 
-    if (isFirstTime) {
-      // Set the flag to false after the first launch
-      await prefs.setBool('first_time_launch', false);
-    }
-
-    return isFirstTime;
+  // function to set onboarding status
+  Future<bool> setOnboarding() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setBool('has_onboarded', true);
   }
 }

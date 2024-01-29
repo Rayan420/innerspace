@@ -17,14 +17,14 @@ class RouteGenerator {
 
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return MaterialPageRoute(builder: (_) => HomeScreen());
       case '/onboarding':
         return MaterialPageRoute(builder: (_) => OnBoardingScreen());
       case '/welcome':
         return MaterialPageRoute(builder: (_) => const WelcomeScreen2());
       case '/login':
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
+            builder: (_) => BlocProvider<SignInBloc>(
                   create: (context) => SignInBloc(
                     userRepository:
                         context.read<AuthenticationBloc>().userRepository,
@@ -33,7 +33,7 @@ class RouteGenerator {
                 ));
       case '/signup':
         return MaterialPageRoute(
-          builder: (_) => BlocProvider(
+          builder: (_) => BlocProvider<SignUpBloc>(
             create: (context) => SignUpBloc(
               userRepository: context.read<AuthenticationBloc>().userRepository,
             ),

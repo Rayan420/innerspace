@@ -8,6 +8,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
    // Check if the app is launched for the first time
-  bool isFirstTime = await Preference().checkFirstTimeLaunch();
-  runApp(App(flavor: 'staging', FirebaseUserRepo(), isFirstTime: isFirstTime,));
+  bool hasBoarded = await Preference().hasOnboarded();
+  runApp(App(flavor: 'staging', FirebaseUserRepo(), hasBoarded: hasBoarded,));
 }
