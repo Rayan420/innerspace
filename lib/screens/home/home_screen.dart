@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:innerspace/bloc/authentiction_bloc/authentication_bloc.dart';
 import 'package:innerspace/bloc/sign_in_bloc/sign_in_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -15,7 +17,7 @@ class HomeScreen extends StatelessWidget {
               onPressed: () {
                 context.read<SignInBloc>().add(const SignOutRequired());
               },
-              icon: const Icon(Icons.login))
+              icon: Icon(Icons.login))
         ],
       ),
     );

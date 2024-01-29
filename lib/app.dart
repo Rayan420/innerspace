@@ -7,10 +7,10 @@ import 'package:user_repository/user_repository.dart';
 class App extends StatelessWidget {
   final String flavor;
   final UserRepository userRepository;
-  final bool isFirstTime;
+  final bool hasBoarded;
 
   const App(this.userRepository,
-      {Key? key, required this.flavor, required this.isFirstTime})
+      {Key? key, required this.flavor, required this.hasBoarded})
       : super(key: key);
 
   @override
@@ -20,7 +20,7 @@ class App extends StatelessWidget {
       // ignore: prefer_const_constructors
       child: AppView(
         flavor: flavor,
-        isFirstTime: isFirstTime,
+        hasBoarded: hasBoarded,
       ),
     );
   }
