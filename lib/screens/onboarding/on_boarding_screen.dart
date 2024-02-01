@@ -10,7 +10,7 @@ import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnBoardingScreen extends StatefulWidget {
-  const OnBoardingScreen({Key? key}) : super(key: key);
+  const OnBoardingScreen({super.key});
 
   @override
   OnBoardingScreenState createState() => OnBoardingScreenState();
@@ -86,12 +86,10 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                     page: currentPage + 1,
                     duration: 500,
                   );
+                } else {
+                  Preference().setOnboarding();
+                  Navigator.popAndPushNamed(context, '/welcome');
                 }
-                else
-                  {
-                    Preference().setOnboarding();
-                    Navigator.popAndPushNamed(context, '/welcome');
-                  }
               },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(

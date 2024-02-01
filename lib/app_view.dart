@@ -14,8 +14,7 @@ class AppView extends StatelessWidget {
   final bool hasBoarded;
   final String flavor;
 
-  const AppView({Key? key, required this.hasBoarded, required this.flavor})
-      : super(key: key);
+  const AppView({super.key, required this.hasBoarded, required this.flavor});
 
   @override
   Widget build(BuildContext context) {

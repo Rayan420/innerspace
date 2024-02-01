@@ -5,14 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:innerspace/bloc/sign_up_bloc/sign_up_bloc.dart';
 import 'package:innerspace/common_widgets/form_header_widget.dart';
+import 'package:innerspace/constants/colors.dart';
 import 'package:innerspace/constants/sizes.dart';
 import 'package:innerspace/constants/strings.dart';
 import 'package:innerspace/screens/authentication/components/my_text_field.dart';
+import 'package:innerspace/screens/authentication/components/sign_up_footer.dart';
 import 'package:password_strength/password_strength.dart';
 import 'package:user_repository/user_repository.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
+  const SignUp({super.key});
 
   @override
   State<SignUp> createState() => _SignUpState();
@@ -32,19 +34,25 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
+    var mediaQuery = MediaQuery.of(context);
+
+    var brightness = mediaQuery.platformBrightness;
+
+    final isDarkMode = brightness == Brightness.dark;
+
     return BlocListener<SignUpBloc, SignUpState>(
       listener: (context, state) {
-        if(state is SignUpSuccess) {
+        if (state is SignUpSuccess) {
           setState(() {
             signUpRequired = false;
             Navigator.pop(context);
           });
           // Navigator.pop(context);
-        } else if(state is SignUpProcess) {
+        } else if (state is SignUpProcess) {
           setState(() {
             signUpRequired = true;
           });
-        }  else if(state is SignUpFailure) {
+        } else if (state is SignUpFailure) {
           return;
         }
       },
@@ -65,13 +73,12 @@ class _SignUpState extends State<SignUp> {
                 child: Column(
                   children: [
                     const FormHeaderWidget(
-                      image: tWelcomeScreenImage,
                       title: tsignUpTitle,
                       subtitle: tsignUpSubtitle,
                     ),
                     Container(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: tFormHeight - 10),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: tFormHeight - 10),
                       child: Form(
                         key: _formKey,
                         child: Column(
@@ -157,80 +164,70 @@ class _SignUpState extends State<SignUp> {
                               width: MediaQuery.of(context).size.width * 0.9,
                               child: LinearProgressIndicator(
                                 value: passwordStrength,
-                                backgroundColor: Colors.grey[300],
+                                backgroundColor: Colors.transparent,
                                 valueColor: AlwaysStoppedAnimation<Color>(
                                   _getPasswordStrengthColor(passwordStrength),
                                 ),
                               ),
                             ),
+                            const SizedBox(height: tFormHeight - 20),
                             Visibility(
                               visible: !signUpRequired,
-                              child: SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      MyUser myUser = MyUser.empty;
-                                      myUser = myUser.copyWith(
-                                        name: nameController.text,
-                                        email: emailController.text,
-                                      );
-                                      setState(() {
-                                        if (passwordStrength >= 0.3) {
-                                          context.read<SignUpBloc>().add(
-                                                SignUpRequired(
-                                                  myUser,
-                                                  passwordController.text,
-                                                ),
-                                              );
-                                          signUpRequired = true;
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        side: const BorderSide(
+                                            color: Colors.grey, width: 0.5),
+                                        primary: tPrimaryColor,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        if (_formKey.currentState!.validate()) {
+                                          MyUser myUser = MyUser.empty;
+                                          myUser = myUser.copyWith(
+                                            name: nameController.text,
+                                            email: emailController.text,
+                                          );
+                                          setState(() {
+                                            if (passwordStrength >= 0.3) {
+                                              context.read<SignUpBloc>().add(
+                                                    SignUpRequired(
+                                                      myUser,
+                                                      passwordController.text,
+                                                    ),
+                                                  );
+                                              signUpRequired = true;
+                                            }
+                                          });
                                         }
-                                      });
-                                    }
-                                  },
-                                  child: Text(tSignUp.toUpperCase()),
-                                ),
+                                      },
+                                      child: Text(tSignUp.toUpperCase()),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 30),
+                                  SignUpFooter(isDarkMode: isDarkMode),
+                                ],
                               ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                    Column(
-                      children: [
-                        const Text("OR"),
-                        const SizedBox(
-                          height: tFormHeight - 20,
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton.icon(
-                            onPressed: () {
-                              // Navigate back to welcome screen
-                              Navigator.pop(context);
-                            },
-                            icon: const Image(
-                                image: AssetImage(tGoogleLogo), width: 20),
-                            label: const Text(tSignUpWithGoogle),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.popAndPushNamed(context, '/login');
-                          },
-                          child: Text.rich(TextSpan(children: [
-                            TextSpan(
-                              text: tAlreadyHaveAnAccount,
-                              style: Theme.of(context).textTheme.bodyText1,
-                            ),
-                            TextSpan(text: tLogin.toUpperCase()),
-                          ])),
-                        ),
-                      ],
-                    ),
                     Visibility(
                       visible: signUpRequired,
-                      child: const CircularProgressIndicator(),
+                      child: const CircularProgressIndicator(
+                        color: tPrimaryColor,
+                        backgroundColor: tSecondaryColor,
+                        semanticsLabel: "Signing In...",
+                        strokeWidth: 5,
+                        strokeCap: StrokeCap.round,
+                      ),
                     ),
                   ],
                 ),

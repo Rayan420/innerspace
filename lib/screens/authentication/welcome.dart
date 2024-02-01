@@ -45,6 +45,7 @@ class WelcomeScreen2 extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                      side: const BorderSide(color: Colors.black12, width: 1),
                       primary: tPrimaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -59,12 +60,14 @@ class WelcomeScreen2 extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  width: 10.0,
-                ),
+              ],
+            ),
+            Row(
+              children: [
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                      side: const BorderSide(color: Colors.black12, width: 1),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -73,13 +76,13 @@ class WelcomeScreen2 extends StatelessWidget {
                       // Navigate to SignUp screen
                       Navigator.pushNamed(context, '/signup');
                     },
-                    child: const Text(
-                      tSignUp,
+                    child: Text(
+                      tSignUp.toUpperCase(),
                     ),
                   ),
                 ),
               ],
-            ),
+            )
           ],
         ),
       ),
