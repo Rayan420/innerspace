@@ -12,7 +12,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Check if the app is launched for the first time
-  bool isFirstTime = await Preference().checkFirstTimeLaunch();
+  bool hasBoarded = await Preference().hasOnboarded();
 
   // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -20,7 +20,7 @@ void main() async {
   // Initialize the Bloc observer
   Bloc.observer = SimpleBlocObserver();
   // Run the app
-  runApp(App(flavor: 'development', FirebaseUserRepo(), isFirstTime: isFirstTime,));
+  runApp(App(flavor: 'development', FirebaseUserRepo(), hasBoarded: hasBoarded,));
 }
 
 class AppBlocObserver {}

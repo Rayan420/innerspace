@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:innerspace/config/app_preference.dart';
 import 'package:innerspace/constants/colors.dart';
 import 'package:innerspace/constants/strings.dart';
 import 'package:innerspace/models/onboarding/on_boarding_model.dart';
@@ -86,6 +87,11 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                     duration: 500,
                   );
                 }
+                else
+                  {
+                    Preference().setOnboarding();
+                    Navigator.popAndPushNamed(context, '/welcome');
+                  }
               },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
