@@ -77,7 +77,7 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
             fullTransitionValue: 1000,
           ),
           Positioned(
-            bottom: 50,
+            bottom: 70,
             child: OutlinedButton(
               onPressed: () {
                 if (currentPage < pages.length - 1) {
@@ -88,33 +88,39 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                shape: currentPage < pages.length - 1
-                    ? const CircleBorder(
-                        side: BorderSide(color: Colors.black26),
-                      )
-                    : RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 side: const BorderSide(),
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(5),
                 onPrimary: Colors.white,
               ),
               child: Container(
-                padding: const EdgeInsets.all(20),
+                width: pages.length - 1 == currentPage ? 150 : 100,
+                height: 50,
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(10),
                   color: tBlackColor,
                 ),
                 child: currentPage < pages.length - 1
-                    ? const Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.white,
+                    ? const Center(
+                        child: Text(
+                          'Next',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
                       )
-                    : const Text(
-                        'Get Started',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                    : const Center(
+                        child: Text(
+                          'Get Started',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
               ),
@@ -129,12 +135,12 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
               },
               child: Text(
                 currentPage < pages.length - 1 ? 'Skip' : '',
-                style: const TextStyle(color: Colors.grey),
+                style: const TextStyle(color: tBlackColor),
               ),
             ),
           ),
           Positioned(
-            bottom: 10,
+            bottom: 20,
             child: AnimatedSmoothIndicator(
               activeIndex: currentPage,
               count: pages.length,

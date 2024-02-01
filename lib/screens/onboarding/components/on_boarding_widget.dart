@@ -27,8 +27,9 @@ class OnBoardingWidget extends StatelessWidget {
             children: [
               Text(
                 model.title,
-                style: Theme.of(context).textTheme.headline5,
+                style: Theme.of(context).textTheme.headline3,
               ),
+              const SizedBox(height: 10),
               Text(
                 model.subtitle,
                 style: Theme.of(context).textTheme.bodyText1,
@@ -40,7 +41,7 @@ class OnBoardingWidget extends StatelessWidget {
             model.counterText,
             style: Theme.of(context).textTheme.bodyText1,
           ),
-          const SizedBox(height: 60)
+          const SizedBox(height: 10)
         ],
       ),
     );

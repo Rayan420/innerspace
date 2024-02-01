@@ -9,13 +9,15 @@ const tOnBoardingCounter1 = "1/3";
 const tOnBoardingCounter2 = "2/3";
 const tOnBoardingCounter3 = "3/3";
 
-const tOnBoardingTitle1 = "Welcome to InnerSpace";
-const tOnBoardingTitle2 = "Find your circle";
-const tOnBoardingTitle3 = "Start your journey";
-const tOnBoardingSubtitle1 = "A place to find your inner peace";
+const tOnBoardingTitle1 = "Discover Inner Harmony";
+const tOnBoardingTitle2 = "Connect with Like Minds";
+const tOnBoardingTitle3 = "Authentic Conversations";
+const tOnBoardingSubtitle1 =
+    "Your sanctuary for finding inner peace and tranquility.";
 const tOnBoardingSubtitle2 =
-    "A place to find your inner circle and make new friends";
-const tOnBoardingSubtitle3 = "Real voices, real talks. Let's get loud! 🔥";
+    "Build meaningful connections with people who share your interests and passions.";
+const tOnBoardingSubtitle3 =
+    "Engage in authentic conversations with real voices and diverse perspectives.";
 
 const tWelcomeTitle = "Build Your Inner Circle";
 const tWelcomeSubtitle = "A place to find your inner self and make new friends";

@@ -16,11 +16,11 @@ class WelcomeScreen2 extends StatelessWidget {
     final isDarkMode = brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDarkMode ? tSecondaryColor : tOnBoardingPage3Color,
+      backgroundColor: isDarkMode ? tSecondaryColor : tWhiteColor,
       body: Container(
         padding: const EdgeInsets.all(tDefaultSize),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Image(
               image: const AssetImage(tWelcomeScreenImage),
@@ -31,6 +31,7 @@ class WelcomeScreen2 extends StatelessWidget {
                 Text(
                   tWelcomeTitle,
                   style: Theme.of(context).textTheme.headline3,
+                  selectionColor: tWhiteColor,
                 ),
                 Text(
                   tWelcomeSubtitle,
@@ -42,7 +43,13 @@ class WelcomeScreen2 extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: OutlinedButton(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: tPrimaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
                     onPressed: () {
                       // Navigate to SignIn screen
                       Navigator.pushNamed(context, '/login');
@@ -57,6 +64,11 @@ class WelcomeScreen2 extends StatelessWidget {
                 ),
                 Expanded(
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
                     onPressed: () {
                       // Navigate to SignUp screen
                       Navigator.pushNamed(context, '/signup');
