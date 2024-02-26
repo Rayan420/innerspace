@@ -18,14 +18,16 @@ dependencies:
   cupertino_icons: ^1.0.6
   email_validator: ^2.0.1
   password_strength: ^0.2.0
-  google_fonts: ^6.1.0
   liquid_swipe: ^3.1.0
   smooth_page_indicator: ^1.1.0
   shared_preferences: ^2.0.8
+  cloud_firestore_platform_interface: ^6.1.1
+  quickalert: ^1.0.2
+  connectivity_plus: ^5.0.2
 
   user_repository: 
     path: packages/user_repository
-  cloud_firestore_platform_interface: ^6.1.1
+
 
 dev_dependencies:
   flutter_test:
@@ -40,3 +42,13 @@ flutter:
   assets:
     - assets/
     - assets/images/
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/montserrat/Montserrat-Regular.ttf
+        - asset: assets/fonts/montserrat/Montserrat-Bold.ttf
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/poppins/Poppins-Regular.ttf
+        - asset: assets/fonts/poppins/Poppins-Bold.ttf    
+            

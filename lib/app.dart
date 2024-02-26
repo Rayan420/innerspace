@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:innerspace/app_view.dart';
 import 'package:innerspace/bloc/authentiction_bloc/authentication_bloc.dart';
+import 'package:innerspace/bloc/internet_bloc/internet_bloc.dart';
 import 'package:user_repository/user_repository.dart';
 
 class App extends StatelessWidget {
   final String flavor;
   final UserRepository userRepository;
-  final bool hasBoarded;
 
   const App(this.userRepository,
-      {Key? key, required this.flavor, required this.hasBoarded})
+      {Key? key, required this.flavor})
       : super(key: key);
 
   @override
@@ -18,9 +18,15 @@ class App extends StatelessWidget {
     return RepositoryProvider<AuthenticationBloc>(
       create: (context) => AuthenticationBloc(userRepository: userRepository),
       // ignore: prefer_const_constructors
-      child: AppView(
-        flavor: flavor,
-        hasBoarded: hasBoarded,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<InternetBloc>(
+            create: (context) => InternetBloc(),
+          ),
+        ],
+        child:  AppView(
+          flavor: flavor,
+        ),
       ),
     );
   }

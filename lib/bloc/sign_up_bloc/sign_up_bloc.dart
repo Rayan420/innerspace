@@ -25,7 +25,10 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
         }
         emit(SignUpSuccess());
       } catch (e) {
-        emit(SignUpFailure());
+        emit(SignUpFailure(
+            message: e.toString().contains("email-already-in-use")
+                ? "Email already in use"
+                : e.toString()));
       }
     });
   }

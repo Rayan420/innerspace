@@ -42,6 +42,15 @@ const tSignInWith = "Or Sign In With";
 const tDontHaveAnAccount = "Don't have an account? ";
 
 // forgot password screen texts
-const tForgotPasswordTitle = "Forgot Password?";
-const tForgotPasswordSubtitle = "Enter your email to reset your password";
+const tForgotPasswordTitle = "Reset Password";
+const tForgotPasswordSubtitle =
+    "Please enter the email address associated with your account to receive a password reset link";
+const tSendLink = "Send Link";
+
+// reset password screen texts
+const tResetPasswordTitle = "Create New Password";
+const tResetPasswordSubtitle =
+    "Please enter your new password, make sure the new password does not match your current password.";
+const tNewPassword = "New Password";
+const tConfirmNewPassword = "Confirm New Password";
 const tResetPassword = "Reset Password";
