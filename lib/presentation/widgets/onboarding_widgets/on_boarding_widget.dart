@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:innerspace/models/onboarding/on_boarding_model.dart';
+import 'package:innerspace/data/models/on_boarding_model.dart';
 
 class OnBoardingWidget extends StatelessWidget {
   const OnBoardingWidget({

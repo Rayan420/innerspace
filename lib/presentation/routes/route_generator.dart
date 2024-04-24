@@ -7,7 +7,6 @@ import 'package:innerspace/bloc/password_reset_bloc/password_reset_bloc.dart';
 import 'package:innerspace/bloc/sign_in_bloc/sign_in_bloc.dart';
 import 'package:innerspace/bloc/sign_up_bloc/sign_up_bloc.dart';
 import 'package:innerspace/presentation/screens/authentication/login/login_screen.dart';
-import 'package:innerspace/presentation/screens/authentication/reset_password/reset_password.dart';
 import 'package:innerspace/presentation/screens/authentication/reset_password/forgot_password.dart';
 import 'package:innerspace/presentation/screens/authentication/signup/signup_screen.dart';
 import 'package:innerspace/presentation/screens/welcome/welcome.dart';
@@ -24,7 +23,7 @@ class RouteGenerator {
       case '/onboarding':
         return MaterialPageRoute(builder: (_) => OnBoardingScreen());
       case '/welcome':
-        return MaterialPageRoute(builder: (_) => const WelcomeScreen());
+        return MaterialPageRoute(builder: (_) => WelcomeScreen());
       case '/forgot-password':
         return MaterialPageRoute(
           builder: (_) => BlocProvider<PasswordResetBloc>(

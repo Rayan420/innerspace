@@ -1,9 +1,10 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:innerspace/config/shared_preference_config.dart';
 import 'package:innerspace/constants/colors.dart';
 import 'package:innerspace/constants/strings.dart';
-import 'package:innerspace/models/onboarding/on_boarding_model.dart';
+import 'package:innerspace/data/models/on_boarding_model.dart';
 import 'package:innerspace/presentation/widgets/onboarding_widgets/on_boarding_widget.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -86,7 +87,9 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                     duration: 500,
                   );
                 } else {
-                  Navigator.pop(context);
+                  SharedPreferencesConfig.saveWelcome("loadWelcome", false);
+                  print(SharedPreferencesConfig.getWelcome("loadWelcome"));
+                  Navigator.popAndPushNamed(context, "/signup");
                 }
               },
               style: ElevatedButton.styleFrom(

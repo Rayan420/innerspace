@@ -60,14 +60,6 @@ class _LogInState extends State<LogIn> {
         },
         child: SafeArea(
           child: Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ),
             body: Scaffold(
               body: SingleChildScrollView(
                 child: Container(
@@ -165,7 +157,7 @@ class _LogInState extends State<LogIn> {
                                           primary: tPrimaryColor,
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
-                                                BorderRadius.circular(10),
+                                                BorderRadius.circular(40),
                                           ),
                                         ),
                                         onPressed: () {

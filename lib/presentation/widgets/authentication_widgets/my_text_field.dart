@@ -30,20 +30,37 @@ class MyTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      onTap: onTap,
-      textInputAction: TextInputAction.next,
-      focusNode: focusNode,
-      onChanged: onChanged,
-      validator: validator,
-      decoration: InputDecoration(
-        suffixIcon: suffixIcon,
-        prefixIcon: prefixIcon,
-        hintText: hintText,
-        errorText: errorMsg,
+    return Container(
+      color: Color(0xfff7f8f8),
+      //0xfff7f8f8
+      child: TextFormField(
+        controller: controller,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
+        onTap: onTap,
+        textInputAction: TextInputAction.next,
+        focusNode: focusNode,
+        onChanged: onChanged,
+        validator: validator,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: const BorderSide(
+              color: Colors.transparent,
+              width: 1,
+            ),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            // Border when selected
+            borderSide:
+                BorderSide(color: Color.fromARGB(255, 219, 219, 219), width: 2),
+            borderRadius: BorderRadius.all(Radius.circular(25)),
+          ),
+          suffixIcon: suffixIcon,
+          prefixIcon: prefixIcon,
+          hintText: hintText,
+          errorText: errorMsg,
+        ),
       ),
     );
   }

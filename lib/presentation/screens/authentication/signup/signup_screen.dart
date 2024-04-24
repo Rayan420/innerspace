@@ -24,7 +24,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  final nameController = TextEditingController();
+  final userNameController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final emailController = TextEditingController();
@@ -48,7 +48,7 @@ class _SignUpState extends State<SignUp> {
         if (state is SignUpSuccess) {
           setState(() {
             signUpRequired = false;
-            Navigator.popAndPushNamed(context, '/onboarding');
+            Navigator.popAndPushNamed(context, '/home');
           });
           // Navigator.pop(context);
         } else if (state is SignUpProcess) {
@@ -78,7 +78,7 @@ class _SignUpState extends State<SignUp> {
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.popAndPushNamed(context, "/login");
                 },
               ),
             ),
@@ -101,8 +101,8 @@ class _SignUpState extends State<SignUp> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               MyTextField(
-                                controller: nameController,
-                                hintText: "Name",
+                                controller: userNameController,
+                                hintText: "Username",
                                 prefixIcon: const Icon(CupertinoIcons.person),
                               ),
                               const SizedBox(height: tFormHeight - 20),
@@ -162,22 +162,6 @@ class _SignUpState extends State<SignUp> {
                                 },
                               ),
                               const SizedBox(height: tFormHeight - 20),
-                              MyTextField(
-                                controller: confirmPasswordController,
-                                obscureText: obscurePassword,
-                                keyboardType: TextInputType.visiblePassword,
-                                hintText: 'Confirm Password',
-                                prefixIcon:
-                                    const Icon(CupertinoIcons.lock_fill),
-                                validator: (val) {
-                                  if (val!.isEmpty) {
-                                    return 'Please fill in this field';
-                                  } else if (val != passwordController.text) {
-                                    return 'Passwords do not match';
-                                  }
-                                  return null;
-                                },
-                              ),
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 child: LinearProgressIndicator(
@@ -202,7 +186,7 @@ class _SignUpState extends State<SignUp> {
                                           primary: tPrimaryColor,
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
-                                                BorderRadius.circular(10),
+                                                BorderRadius.circular(40),
                                           ),
                                         ),
                                         onPressed: () {
@@ -213,7 +197,8 @@ class _SignUpState extends State<SignUp> {
                                                 .isConnected()) {
                                               MyUser myUser = MyUser.empty;
                                               myUser = myUser.copyWith(
-                                                name: nameController.text,
+                                                username:
+                                                    userNameController.text,
                                                 email: emailController.text,
                                               );
                                               setState(() {

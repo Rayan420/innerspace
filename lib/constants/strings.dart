@@ -19,8 +19,9 @@ const tOnBoardingSubtitle3 =
     "Engage in authentic conversations with real voices and diverse perspectives.";
 
 // welcome screen texts
-const tWelcomeTitle = "Build Your Inner Circle";
-const tWelcomeSubtitle = "A place to find your inner self and make new friends";
+const tWelcomeTitle = "InnerSpace";
+const tWelcomeSubtitle = "Lets get Loud! 🎙️";
+const tGetStarted = "Get Started";
 const tLogin = "Sign In";
 const tSignUp = "Sign Up";
 const tGoogleLogo = "assets/images/google-logo.png";
