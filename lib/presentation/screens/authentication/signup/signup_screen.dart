@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:innerspace/bloc/internet_bloc/internet_bloc.dart';
 import 'package:innerspace/bloc/sign_up_bloc/sign_up_bloc.dart';
+import 'package:innerspace/data/models/sign_up_model.dart';
 
 import 'package:innerspace/presentation/widgets/authentication_widgets/my_text_field.dart';
 import 'package:innerspace/presentation/widgets/authentication_widgets/auth_page_footer.dart';
@@ -195,23 +196,18 @@ class _SignUpState extends State<SignUp> {
                                             if (BlocProvider.of<InternetBloc>(
                                                     context)
                                                 .isConnected()) {
-                                              MyUser myUser = MyUser.empty;
-                                              myUser = myUser.copyWith(
-                                                username:
-                                                    userNameController.text,
-                                                email: emailController.text,
-                                              );
+                                              SignUpModel myUser = SignUpModel(
+                                                  username:
+                                                      userNameController.text,
+                                                  email: emailController.text,
+                                                  password:
+                                                      passwordController.text);
                                               setState(() {
                                                 if (passwordStrength >= 0.3) {
                                                   context
                                                       .read<SignUpBloc>()
                                                       .add(
-                                                        SignUpRequired(
-                                                          myUser,
-                                                          passwordController
-                                                              .text,
-                                                        ),
-                                                      );
+                                                        SignUpRequired(myUser));
                                                   signUpRequired = true;
                                                 }
                                               });

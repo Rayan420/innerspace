@@ -31,7 +31,6 @@ class MyTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xfff7f8f8),
       //0xfff7f8f8
       child: TextFormField(
         controller: controller,

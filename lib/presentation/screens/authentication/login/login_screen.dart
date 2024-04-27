@@ -40,8 +40,8 @@ class _LogInState extends State<LogIn> {
         if (state is SignInSuccess) {
           setState(() {
             signInRequired = false;
-            Navigator.pop(context);
           });
+          Navigator.popAndPushNamed(context, '/');
         } else if (state is SignInProcess) {
           setState(() {
             signInRequired = true;
@@ -81,6 +81,7 @@ class _LogInState extends State<LogIn> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               MyTextField(
+                                
                                 controller: emailController,
                                 hintText: 'Email',
                                 obscureText: false,
@@ -89,7 +90,7 @@ class _LogInState extends State<LogIn> {
                                 validator: (val) {
                                   if (val!.isEmpty) {
                                     return 'Please fill in this field';
-                                  } else if (!RegExp(
+                                  } else if (RegExp(
                                           r'^[\w-\.]+@([\w-]+.)+[\w-]{2,4}$')
                                       .hasMatch(val)) {
                                     return 'Please enter a valid email';

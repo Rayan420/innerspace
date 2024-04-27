@@ -7,7 +7,12 @@ import 'package:innerspace/constants/sizes.dart';
 import 'package:innerspace/constants/strings.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key, required this.mode, required this.oobCode, required this.apiKey, required this.lang});
+  const ResetPasswordScreen(
+      {super.key,
+      required this.mode,
+      required this.oobCode,
+      required this.apiKey,
+      required this.lang});
   final String mode;
   final String oobCode;
   final String apiKey;

@@ -94,6 +94,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               MyTextField(
+                                
                                 controller: emailController,
                                 hintText: 'Email',
                                 obscureText: false,

@@ -15,7 +15,7 @@ class PasswordResetBloc extends Bloc<PasswordResetEvent, PasswordResetState> {
     on<PasswordResetRequired>((event, emit) async {
       emit(PasswordResetProcess());
       try {
-        _userRepository.resetPassword(event.email);
+        //_userRepository.resetPassword(event.email);
         print("Password reset email sent");
         emit(PasswordResetSuccess());
       } on FirebaseException catch (e) {

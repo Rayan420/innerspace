@@ -9,8 +9,7 @@ class App extends StatelessWidget {
   final String flavor;
   final UserRepository userRepository;
 
-  const App(this.userRepository,
-      {Key? key, required this.flavor})
+  const App(this.userRepository, {Key? key, required this.flavor})
       : super(key: key);
 
   @override
@@ -24,7 +23,7 @@ class App extends StatelessWidget {
             create: (context) => InternetBloc(),
           ),
         ],
-        child:  AppView(
+        child: AppView(
           flavor: flavor,
         ),
       ),
