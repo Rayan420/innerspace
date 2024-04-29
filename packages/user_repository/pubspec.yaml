@@ -10,8 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   equatable: ^2.0.5  
-  firebase_auth: ^4.10.0
-  cloud_firestore: ^4.9.2
+  path_provider: ^2.0.1
 
 dev_dependencies:
   flutter_test:

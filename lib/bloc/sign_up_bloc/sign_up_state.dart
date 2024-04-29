@@ -13,4 +13,11 @@ class SignUpProcess extends SignUpState {}
 
 class SignUpSuccess extends SignUpState {}
 
-class SignUpFailure extends SignUpState {}
+class SignUpFailure extends SignUpState {
+  final String message;
+
+  const SignUpFailure({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
