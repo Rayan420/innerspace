@@ -14,6 +14,7 @@ import 'package:innerspace/presentation/screens/home/home_screen.dart';
 import 'package:innerspace/presentation/screens/welcome/on_boarding_screen.dart';
 
 class RouteGenerator {
+  
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
 

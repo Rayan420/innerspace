@@ -12,6 +12,8 @@ class MyTextField extends StatelessWidget {
   final FocusNode? focusNode;
   final String? errorMsg;
   final String? Function(String?)? onChanged;
+  final double? width;
+  final double? height;
 
   const MyTextField({
     super.key,
@@ -26,10 +28,13 @@ class MyTextField extends StatelessWidget {
     this.focusNode,
     this.errorMsg,
     this.onChanged,
+    this.width,
+    this.height,
   });
 
   @override
   Widget build(BuildContext context) {
+    // ignore: avoid_unnecessary_containers
     return Container(
       //0xfff7f8f8
       child: TextFormField(

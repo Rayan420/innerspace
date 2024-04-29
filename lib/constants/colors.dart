@@ -19,3 +19,4 @@ const tOnBoardingPage2Color =
     Color.fromARGB(255, 74, 226, 201); // Light Blue (as an example contrast)
 const tOnBoardingPage3AlternativeColor = Color(0xFFFF6F61);
 const tOnBoardingPage3Color = Color.fromARGB(255, 207, 178, 153);
+

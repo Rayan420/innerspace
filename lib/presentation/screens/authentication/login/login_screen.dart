@@ -81,19 +81,15 @@ class _LogInState extends State<LogIn> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               MyTextField(
-                                
                                 controller: emailController,
                                 hintText: 'Email',
                                 obscureText: false,
                                 keyboardType: TextInputType.emailAddress,
-                                prefixIcon: const Icon(CupertinoIcons.mail),
+                                prefixIcon:
+                                    const Icon(CupertinoIcons.person_fill),
                                 validator: (val) {
                                   if (val!.isEmpty) {
                                     return 'Please fill in this field';
-                                  } else if (RegExp(
-                                          r'^[\w-\.]+@([\w-]+.)+[\w-]{2,4}$')
-                                      .hasMatch(val)) {
-                                    return 'Please enter a valid email';
                                   }
                                   return null;
                                 },
@@ -200,7 +196,7 @@ class _LogInState extends State<LogIn> {
                                                     ],
                                                   ),
                                                   duration:
-                                                      Duration(seconds: 3),
+                                                      const Duration(seconds: 3),
                                                 ),
                                               );
                                             }

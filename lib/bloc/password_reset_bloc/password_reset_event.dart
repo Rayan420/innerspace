@@ -12,3 +12,15 @@ class PasswordResetRequired extends PasswordResetEvent {
 
   const PasswordResetRequired({required this.email});
 }
+
+class VerifyOtpRequired extends PasswordResetEvent {
+  final String otp;
+
+  const VerifyOtpRequired({required this.otp});
+}
+
+class ConfirmPasswordReset extends PasswordResetEvent {
+  final String password;
+
+  const ConfirmPasswordReset({required this.password});
+}

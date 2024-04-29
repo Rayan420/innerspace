@@ -48,16 +48,78 @@ class UserRepository {
     return _userDataStorage.userDataExists();
   }
 
+  Future<void> resetPassword(String email) async {
+    try {
+      await _sendRequest(
+        '$_baseUrl/auth/forgot-password/$email/send',
+        headers: {'Content-Type': 'application/json'},
+      );
+    } catch (e) {
+      log('Failed to reset password: $e');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> confirmOtp(
+      String email, String verifyCode) async {
+    try {
+      // Construct the URL with query parameters
+      var url = Uri.parse('$_baseUrl/auth/forgot-password/$email/otp')
+          .replace(queryParameters: {'verify': verifyCode});
+
+      // Send the request
+      return await _sendRequest(
+        url.toString(),
+        headers: {'Content-Type': 'application/json'},
+      );
+    } catch (e) {
+      // Handle errors
+      log('Failed to reset password: $e');
+      // Rethrow the error
+      rethrow;
+    }
+  }
+
+  Future<void> confirmPasswordReset(String s, String t, String password) async {
+    try {
+      // Construct the URL with query parameters
+      var url = Uri.parse('$_baseUrl/auth/forgot-password/$s/change');
+      // Construct the request body
+      var requestBody = {
+        'token': t,
+        'password': password // Encode the password as JSON string
+      };
+      // Send the request
+      await _sendRequest(url.toString(),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: requestBody);
+      // Process the response
+      // ...
+    } catch (e) {
+      // Handle errors
+      log('Failed to reset password: $e');
+      // Rethrow the error
+      rethrow;
+    }
+  }
+
   // Method to sign up
   Future<void> signUp({
     required String username,
     required String email,
     required String password,
+    required String firstName,
+    required String lastName,
   }) async {
     try {
       final responseData = await _sendRequest(
         '$_baseUrl/auth/register',
         body: {
+          'firstName': firstName,
+          'lastName': lastName,
           'username': username,
           'email': email,
           'password': password,

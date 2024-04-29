@@ -20,7 +20,6 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(SharedPreferencesConfig.getWelcome("loadWelcome"));
     return MaterialApp(
         debugShowCheckedModeBanner: flavor == 'development',
         title: 'InnerSpace',

@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:innerspace/bloc/internet_bloc/internet_bloc.dart';
 import 'package:innerspace/bloc/sign_up_bloc/sign_up_bloc.dart';
-import 'package:innerspace/data/models/sign_up_model.dart';
+import 'package:innerspace/constants/theme/widgets/primary_textformfield.dart';
+import 'package:innerspace/data/models/auth_models/sign_up_model.dart';
 
 import 'package:innerspace/presentation/widgets/authentication_widgets/my_text_field.dart';
 import 'package:innerspace/presentation/widgets/authentication_widgets/auth_page_footer.dart';
@@ -15,7 +16,6 @@ import 'package:innerspace/constants/sizes.dart';
 import 'package:innerspace/constants/strings.dart';
 import 'package:password_strength/password_strength.dart';
 import 'package:quickalert/quickalert.dart';
-import 'package:user_repository/user_repository.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -26,6 +26,9 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   final userNameController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final emailController = TextEditingController();
@@ -49,7 +52,7 @@ class _SignUpState extends State<SignUp> {
         if (state is SignUpSuccess) {
           setState(() {
             signUpRequired = false;
-            Navigator.popAndPushNamed(context, '/home');
+            Navigator.popAndPushNamed(context, '/');
           });
           // Navigator.pop(context);
         } else if (state is SignUpProcess) {
@@ -99,12 +102,58 @@ class _SignUpState extends State<SignUp> {
                         child: Form(
                           key: _formKey,
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      PrimaryTextFormField(
+                                        borderRadius: BorderRadius.circular(40),
+                                        hintText: 'Khalid',
+                                        controller: firstNameController,
+                                        isDarkMode: isDarkMode,
+                                        width: 155,
+                                        height: 58,
+                                        validator: 'Please enter a first name',
+                                      )
+                                    ],
+                                  ),
+                                  const SizedBox(height: tFormHeight - 20),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      PrimaryTextFormField(
+                                        borderRadius: BorderRadius.circular(40),
+                                        hintText: 'Mohammed',
+                                        controller: lastNameController,
+                                        isDarkMode: isDarkMode,
+                                        width: 155,
+                                        height: 58,
+                                        validator: 'Please enter a last name',
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: tFormHeight - 20),
+                                ],
+                              ),
+                              const SizedBox(height: tFormHeight - 20),
                               MyTextField(
                                 controller: userNameController,
                                 hintText: "Username",
-                                prefixIcon: const Icon(CupertinoIcons.person),
+                                prefixIcon:
+                                    const Icon(CupertinoIcons.person_fill),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return 'Please enter a username';
+                                  }
+                                  return null;
+                                },
                               ),
                               const SizedBox(height: tFormHeight - 20),
                               MyTextField(
@@ -112,7 +161,8 @@ class _SignUpState extends State<SignUp> {
                                 hintText: 'Email',
                                 obscureText: false,
                                 keyboardType: TextInputType.emailAddress,
-                                prefixIcon: const Icon(CupertinoIcons.mail),
+                                prefixIcon:
+                                    const Icon(CupertinoIcons.mail_solid),
                                 validator: (val) {
                                   if (val!.isEmpty) {
                                     return 'Please fill in this field';
@@ -201,13 +251,17 @@ class _SignUpState extends State<SignUp> {
                                                       userNameController.text,
                                                   email: emailController.text,
                                                   password:
-                                                      passwordController.text);
+                                                      passwordController.text,
+                                                  firstName:
+                                                      firstNameController.text,
+                                                  lastName:
+                                                      lastNameController.text);
                                               setState(() {
                                                 if (passwordStrength >= 0.3) {
                                                   context
                                                       .read<SignUpBloc>()
-                                                      .add(
-                                                        SignUpRequired(myUser));
+                                                      .add(SignUpRequired(
+                                                          myUser));
                                                   signUpRequired = true;
                                                 }
                                               });

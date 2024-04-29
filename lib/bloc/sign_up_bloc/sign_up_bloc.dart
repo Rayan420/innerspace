@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:innerspace/data/models/sign_up_model.dart';
+import 'package:innerspace/data/models/auth_models/sign_up_model.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'sign_up_event.dart';
@@ -18,7 +18,9 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
         await _userRepository.signUp(
             username: event.user.username,
             email: event.user.email,
-            password: event.user.password);
+            password: event.user.password,
+            firstName: event.user.firstName,
+            lastName: event.user.lastName);
         emit(SignUpSuccess());
       } catch (e) {
         emit(SignUpFailure(
