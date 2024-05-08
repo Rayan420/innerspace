@@ -8,13 +8,13 @@ import 'package:innerspace/bloc/sign_in_bloc/sign_in_bloc.dart';
 import 'package:innerspace/bloc/sign_up_bloc/sign_up_bloc.dart';
 import 'package:innerspace/presentation/screens/authentication/login/login_screen.dart';
 import 'package:innerspace/presentation/screens/authentication/reset_password/forgot_password.dart';
+import 'package:innerspace/presentation/screens/authentication/signup/profile_registration.dart';
 import 'package:innerspace/presentation/screens/authentication/signup/signup_screen.dart';
 import 'package:innerspace/presentation/screens/welcome/welcome.dart';
 import 'package:innerspace/presentation/screens/home/home_screen.dart';
 import 'package:innerspace/presentation/screens/welcome/on_boarding_screen.dart';
 
 class RouteGenerator {
-  
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
 
@@ -51,6 +51,15 @@ class RouteGenerator {
               userRepository: context.read<AuthenticationBloc>().userRepository,
             ),
             child: const SignUp(),
+          ),
+        );
+      case '/profile-setup':
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider<SignUpBloc>(
+            create: (context) => SignUpBloc(
+              userRepository: context.read<AuthenticationBloc>().userRepository,
+            ),
+            child: ProfileSetup(),
           ),
         );
       // case '/forgot-password':

@@ -52,7 +52,7 @@ class _SignUpState extends State<SignUp> {
         if (state is SignUpSuccess) {
           setState(() {
             signUpRequired = false;
-            Navigator.popAndPushNamed(context, '/');
+            Navigator.popAndPushNamed(context, '/profile-setup');
           });
           // Navigator.pop(context);
         } else if (state is SignUpProcess) {

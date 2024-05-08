@@ -11,6 +11,12 @@ dependencies:
     sdk: flutter
   equatable: ^2.0.5  
   path_provider: ^2.0.1
+  http_parser: ^4.0.1
+  http: ^1.2.0
+  intl: ^0.18.0
+
+
+
 
 dev_dependencies:
   flutter_test:

@@ -12,3 +12,11 @@ class SignUpRequired extends SignUpEvent {
 
   const SignUpRequired(this.user);
 }
+
+class CompleteSignUp extends SignUpEvent {
+  final Uint8List? image;
+  final String bio;
+  final DateTime dob;
+
+  const CompleteSignUp(this.image, this.bio, this.dob);
+}

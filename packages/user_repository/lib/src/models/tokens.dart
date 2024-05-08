@@ -1,29 +1,29 @@
 import 'package:equatable/equatable.dart';
 
 class Token extends Equatable {
-  final String accessToken;
-  final String refreshToken;
+  final String access;
+  final String refresh;
 
   const Token({
-    required this.accessToken,
-    required this.refreshToken,
+    required this.access,
+    required this.refresh,
   });
 
   factory Token.fromJson(Map<String, dynamic> json) {
     return Token(
-      accessToken: json['access'],
-      refreshToken: json['refresh'],
+      access: json['access'],
+      refresh: json['refresh'],
     );
   }
 
   // Define toJson method to convert Token object to JSON
   Map<String, dynamic> toJson() {
     return {
-      'access': accessToken,
-      'refresh': refreshToken,
+      'access': access,
+      'refresh': refresh,
     };
   }
 
   @override
-  List<Object?> get props => [accessToken, refreshToken];
+  List<Object?> get props => [access, refresh];
 }

@@ -15,6 +15,7 @@ void main() async {
   userRepo.loadUserData();
 
   SharedPreferencesConfig.initialize();
+  // request permission to use gallery and microphone
 
   // Initialize the Bloc observer
   Bloc.observer = SimpleBlocObserver();

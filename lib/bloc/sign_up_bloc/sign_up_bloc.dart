@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:innerspace/data/models/auth_models/sign_up_model.dart';
@@ -27,6 +29,19 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
             message: e.toString().contains("email-already-in-use")
                 ? "Email already in use"
                 : e.toString()));
+      }
+    });
+
+    on<CompleteSignUp>((event, emit) async {
+      emit(ProfileSignUpProcess());
+      try {
+        DateTime dob = DateTime.parse(event.dob.toIso8601String());
+
+        await _userRepository.signUpComplete(
+            bio: event.bio, avatar: event.image!, dob: dob.toIso8601String());
+        emit(ProfileSignUpSuccess());
+      } catch (e) {
+        emit(ProfileSignUpFailure(message: e.toString()));
       }
     });
   }

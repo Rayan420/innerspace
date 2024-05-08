@@ -21,3 +21,21 @@ class SignUpFailure extends SignUpState {
   @override
   List<Object> get props => [message];
 }
+
+class ProfileSignUpSuccess extends SignUpState {
+  ProfileSignUpSuccess();
+
+  @override
+  List<Object> get props => [];
+}
+
+class ProfileSignUpProcess extends SignUpState {}
+
+class ProfileSignUpFailure extends SignUpState {
+  final String message;
+
+  ProfileSignUpFailure({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}

@@ -1,8 +1,11 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:equatable/equatable.dart';
 
 class UserProfile extends Equatable {
   final int profileId;
-  final String? profilePictureUrl;
+  final Uint8List? profilePicture;
   final String? bio;
   final String lastUpdated;
   final int followerCount;
@@ -13,7 +16,7 @@ class UserProfile extends Equatable {
 
   const UserProfile({
     required this.profileId,
-    this.profilePictureUrl,
+    this.profilePicture,
     this.bio,
     required this.lastUpdated,
     required this.followerCount,
@@ -26,7 +29,7 @@ class UserProfile extends Equatable {
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
       profileId: json['profileId'],
-      profilePictureUrl: json['profilePictureUrl'],
+      profilePicture: _decodeProfilePicture(json['profilePicture']),
       bio: json['bio'],
       lastUpdated: json['lastUpdated'],
       followerCount: json['followerCount'],
@@ -37,10 +40,17 @@ class UserProfile extends Equatable {
     );
   }
 
+  static Uint8List? _decodeProfilePicture(String? base64String) {
+    if (base64String != null) {
+      return base64Decode(base64String);
+    }
+    return null;
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'profileId': profileId,
-      'profilePictureUrl': profilePictureUrl,
+      'profilePicture': _encodeProfilePicture(profilePicture),
       'bio': bio,
       'lastUpdated': lastUpdated,
       'followerCount': followerCount,
@@ -51,10 +61,17 @@ class UserProfile extends Equatable {
     };
   }
 
+  static String? _encodeProfilePicture(Uint8List? profilePicture) {
+    if (profilePicture != null) {
+      return base64Encode(profilePicture);
+    }
+    return null;
+  }
+
   @override
   List<Object?> get props => [
         profileId,
-        profilePictureUrl,
+        profilePicture,
         bio,
         lastUpdated,
         followerCount,

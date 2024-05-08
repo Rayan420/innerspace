@@ -64,3 +64,9 @@ const tResetPasswordSubtitle =
     "Please enter your new password, make sure the new password does not match your current password.";
 const tConfirmNewPassword = "Confirm New Password";
 const tResetPassword = "Reset Password";
+
+const tSetProfileTitle = "Set Up Your Profile";
+const tSetProfileSubtitle =
+    "Please provide the following information to complete your profile setup";
+const tBio = "Bio";
+const tSetup = "Setup";
