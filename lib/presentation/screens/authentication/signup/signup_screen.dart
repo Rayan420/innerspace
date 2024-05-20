@@ -12,7 +12,7 @@ import 'package:innerspace/presentation/widgets/authentication_widgets/my_text_f
 import 'package:innerspace/presentation/widgets/authentication_widgets/auth_page_footer.dart';
 import 'package:innerspace/presentation/widgets/common_widgets/form_header_widget.dart';
 import 'package:innerspace/constants/colors.dart';
-import 'package:innerspace/constants/sizes.dart';
+import 'package:innerspace/constants/values.dart';
 import 'package:innerspace/constants/strings.dart';
 import 'package:password_strength/password_strength.dart';
 import 'package:quickalert/quickalert.dart';
@@ -234,7 +234,7 @@ class _SignUpState extends State<SignUp> {
                                         style: ElevatedButton.styleFrom(
                                           side: const BorderSide(
                                               color: Colors.grey, width: 0.5),
-                                          primary: tPrimaryColor,
+                                          backgroundColor: tPrimaryColor,
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(40),

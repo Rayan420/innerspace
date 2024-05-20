@@ -3,21 +3,23 @@ import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:innerspace/data/models/auth_models/sign_up_model.dart';
-import 'package:user_repository/user_repository.dart';
+import 'package:user_repository/data.dart';
 
 part 'sign_up_event.dart';
 part 'sign_up_state.dart';
 
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
-  final UserRepository _userRepository;
+  final AuthenticationRepository _authRepository;
 
-  SignUpBloc({required UserRepository userRepository})
-      : _userRepository = userRepository,
+
+
+  SignUpBloc({required AuthenticationRepository authRepository})
+      : _authRepository = authRepository,
         super(SignUpInitial()) {
     on<SignUpRequired>((event, emit) async {
       emit(SignUpProcess());
       try {
-        await _userRepository.signUp(
+        await _authRepository.signUp(
             username: event.user.username,
             email: event.user.email,
             password: event.user.password,
@@ -37,9 +39,9 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       try {
         DateTime dob = DateTime.parse(event.dob.toIso8601String());
 
-        await _userRepository.signUpComplete(
+        await _authRepository.signUpComplete(
             bio: event.bio, avatar: event.image!, dob: dob.toIso8601String());
-        emit(ProfileSignUpSuccess());
+        emit(const ProfileSignUpSuccess());
       } catch (e) {
         emit(ProfileSignUpFailure(message: e.toString()));
       }

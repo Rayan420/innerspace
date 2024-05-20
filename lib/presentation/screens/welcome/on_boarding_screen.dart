@@ -92,12 +92,11 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
+                foregroundColor: Colors.white, shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
                 side: const BorderSide(),
                 padding: const EdgeInsets.all(5),
-                onPrimary: Colors.white,
               ),
               child: Container(
                 width: pages.length - 1 == currentPage ? 150 : 100,

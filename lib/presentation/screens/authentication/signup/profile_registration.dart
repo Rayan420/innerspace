@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cupertino_date_textbox/cupertino_date_textbox.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,7 @@ import 'package:innerspace/constants/theme/widgets/avatar_list.dart';
 import 'package:intl/intl.dart';
 
 class ProfileSetup extends StatefulWidget {
-  ProfileSetup({
+  const ProfileSetup({
     super.key,
   });
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:innerspace/constants/colors.dart';
-import 'package:innerspace/constants/sizes.dart';
+import 'package:innerspace/constants/values.dart';
 import 'package:innerspace/constants/strings.dart';
 
 class AuthPageFooter extends StatelessWidget {

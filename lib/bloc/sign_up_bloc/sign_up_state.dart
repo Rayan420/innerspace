@@ -23,7 +23,7 @@ class SignUpFailure extends SignUpState {
 }
 
 class ProfileSignUpSuccess extends SignUpState {
-  ProfileSignUpSuccess();
+  const ProfileSignUpSuccess();
 
   @override
   List<Object> get props => [];
@@ -34,7 +34,7 @@ class ProfileSignUpProcess extends SignUpState {}
 class ProfileSignUpFailure extends SignUpState {
   final String message;
 
-  ProfileSignUpFailure({required this.message});
+  const ProfileSignUpFailure({required this.message});
 
   @override
   List<Object> get props => [message];

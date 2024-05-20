@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:innerspace/constants/colors.dart';
-import 'package:innerspace/constants/sizes.dart';
+import 'package:innerspace/constants/values.dart';
 import 'package:innerspace/constants/strings.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -42,8 +42,7 @@ class WelcomeScreen extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      side: const BorderSide(color: Colors.black12, width: 1),
-                      primary: tPrimaryColor,
+                      side: const BorderSide(color: Colors.black12, width: 1), backgroundColor: tPrimaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(40),
                       ),

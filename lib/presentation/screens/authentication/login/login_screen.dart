@@ -9,7 +9,7 @@ import 'package:innerspace/presentation/widgets/authentication_widgets/my_text_f
 import 'package:innerspace/presentation/widgets/authentication_widgets/auth_page_footer.dart';
 import 'package:innerspace/presentation/widgets/common_widgets/form_header_widget.dart';
 import 'package:innerspace/constants/colors.dart';
-import 'package:innerspace/constants/sizes.dart';
+import 'package:innerspace/constants/values.dart';
 import 'package:innerspace/constants/strings.dart';
 
 class LogIn extends StatefulWidget {
@@ -150,8 +150,7 @@ class _LogInState extends State<LogIn> {
                                       child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
                                           side: const BorderSide(
-                                              color: Colors.grey, width: 0.5),
-                                          primary: tPrimaryColor,
+                                              color: Colors.grey, width: 0.5), backgroundColor: tPrimaryColor,
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(40),

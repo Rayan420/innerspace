@@ -6,13 +6,15 @@ import 'package:innerspace/bloc/authentiction_bloc/authentication_bloc.dart';
 import 'package:innerspace/bloc/password_reset_bloc/password_reset_bloc.dart';
 import 'package:innerspace/bloc/sign_in_bloc/sign_in_bloc.dart';
 import 'package:innerspace/bloc/sign_up_bloc/sign_up_bloc.dart';
+import 'package:innerspace/presentation/routes/nav_bar.dart';
 import 'package:innerspace/presentation/screens/authentication/login/login_screen.dart';
 import 'package:innerspace/presentation/screens/authentication/reset_password/forgot_password.dart';
 import 'package:innerspace/presentation/screens/authentication/signup/profile_registration.dart';
 import 'package:innerspace/presentation/screens/authentication/signup/signup_screen.dart';
+import 'package:innerspace/presentation/screens/splash.dart';
 import 'package:innerspace/presentation/screens/welcome/welcome.dart';
-import 'package:innerspace/presentation/screens/home/home_screen.dart';
 import 'package:innerspace/presentation/screens/welcome/on_boarding_screen.dart';
+import 'package:user_repository/data.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -20,17 +22,22 @@ class RouteGenerator {
 
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => HomeScreen());
+        return MaterialPageRoute(
+            builder: (_) => NavigationScreen(
+                  userRepository: args as UserRepository,
+                ));
       case '/onboarding':
         return MaterialPageRoute(builder: (_) => OnBoardingScreen());
+      case '/splash':
+        return MaterialPageRoute(builder: (_) => SplashScreen());
       case '/welcome':
         return MaterialPageRoute(builder: (_) => WelcomeScreen());
       case '/forgot-password':
         return MaterialPageRoute(
           builder: (_) => BlocProvider<PasswordResetBloc>(
             create: (context) => PasswordResetBloc(
-                userRepository:
-                    context.read<AuthenticationBloc>().userRepository),
+                authRepository:
+                    context.read<AuthenticationBloc>().authRepository),
             child: const ForgotPassword(),
           ),
         );
@@ -39,8 +46,8 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (_) => BlocProvider<SignInBloc>(
                   create: (context) => SignInBloc(
-                    userRepository:
-                        context.read<AuthenticationBloc>().userRepository,
+                    authRepository:
+                        context.read<AuthenticationBloc>().authRepository,
                   ),
                   child: const LogIn(),
                 ));
@@ -48,7 +55,7 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => BlocProvider<SignUpBloc>(
             create: (context) => SignUpBloc(
-              userRepository: context.read<AuthenticationBloc>().userRepository,
+              authRepository: context.read<AuthenticationBloc>().authRepository,
             ),
             child: const SignUp(),
           ),
@@ -57,7 +64,7 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => BlocProvider<SignUpBloc>(
             create: (context) => SignUpBloc(
-              userRepository: context.read<AuthenticationBloc>().userRepository,
+              authRepository: context.read<AuthenticationBloc>().authRepository,
             ),
             child: ProfileSetup(),
           ),

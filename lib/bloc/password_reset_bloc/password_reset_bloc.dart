@@ -1,22 +1,22 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:innerspace/data/models/auth_models/reset_password_model.dart';
-import 'package:user_repository/user_repository.dart';
+import 'package:user_repository/data.dart';
 
 part 'password_reset_event.dart';
 part 'password_reset_state.dart';
 
 class PasswordResetBloc extends Bloc<PasswordResetEvent, PasswordResetState> {
-  final UserRepository _userRepository;
+  final AuthenticationRepository _authRepository;
   final ResetPasswordModel model = ResetPasswordModel();
 
-  PasswordResetBloc({required UserRepository userRepository})
-      : _userRepository = userRepository,
+  PasswordResetBloc({required AuthenticationRepository authRepository})
+      : _authRepository = authRepository,
         super(PasswordResetInitial()) {
     on<PasswordResetRequired>((event, emit) async {
       emit(PasswordResetProcess());
       try {
-        await _userRepository.resetPassword(event.email);
+        await _authRepository.resetPassword(event.email);
         model.email = event.email;
         emit(PasswordResetSuccess());
       } catch (e) {
@@ -28,7 +28,7 @@ class PasswordResetBloc extends Bloc<PasswordResetEvent, PasswordResetState> {
       emit(VerifyOtpProcess());
       try {
         var response =
-            await _userRepository.confirmOtp(model.email!, event.otp);
+            await _authRepository.confirmOtp(model.email!, event.otp);
         // Map the response to your ResetPasswordModel
         var x = ResetPasswordModel.fromJson(response);
         model.token = x.token;
@@ -44,7 +44,7 @@ class PasswordResetBloc extends Bloc<PasswordResetEvent, PasswordResetState> {
       emit(ConfirmPasswordResetProcess());
       try {
         //print the password
-        await _userRepository.confirmPasswordReset(
+        await _authRepository.confirmPasswordReset(
             model.email!, model.token!, event.password);
         emit(ConfirmPasswordResetSuccess());
       } catch (e) {

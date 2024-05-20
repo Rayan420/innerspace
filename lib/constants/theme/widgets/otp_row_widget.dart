@@ -1,7 +1,7 @@
 // otp_row.dart
 import 'package:flutter/material.dart';
 import 'package:innerspace/constants/colors.dart';
-import 'package:innerspace/constants/sizes.dart';
+import 'package:innerspace/constants/values.dart';
 
 class ResetPage extends StatelessWidget {
   const ResetPage({
@@ -45,9 +45,7 @@ class ResetPage extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        side: const BorderSide(color: Colors.grey, width: 0.5),
-                        // ignore: deprecated_member_use
-                        primary: tPrimaryColor,
+                        side: const BorderSide(color: Colors.grey, width: 0.5), backgroundColor: tPrimaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:innerspace/bloc/sign_in_bloc/sign_in_bloc.dart';
+import 'package:innerspace/constants/colors.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -10,6 +11,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: tSecondaryColor,
       appBar: AppBar(
         title: const Text('Welcome, you are In !'),
         actions: [
@@ -19,6 +21,11 @@ class HomeScreen extends StatelessWidget {
               },
               icon: const Icon(Icons.login))
         ],
+      ),
+      body: const Center(
+        child: Image(
+          image: AssetImage("assets/icons/noise.png"),
+        ),
       ),
     );
   }

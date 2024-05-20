@@ -8,7 +8,7 @@ import 'package:innerspace/constants/theme/widgets/otp_row_widget.dart';
 import 'package:innerspace/presentation/widgets/authentication_widgets/my_text_field.dart';
 import 'package:innerspace/presentation/widgets/common_widgets/form_header_widget.dart';
 import 'package:innerspace/constants/colors.dart';
-import 'package:innerspace/constants/sizes.dart';
+import 'package:innerspace/constants/values.dart';
 import 'package:innerspace/constants/strings.dart';
 import 'package:password_strength/password_strength.dart';
 import 'package:quickalert/quickalert.dart';
