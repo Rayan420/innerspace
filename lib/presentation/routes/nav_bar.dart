@@ -41,7 +41,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
         Container(), // Placeholder for the middle button
         const SearchScreen(),
         ProfileScreen(
-          userRepository: widget.userRepository,
+          userRepository: widget.userRepository,isdarkmode: isDarkMode,
         ),
       ]),
       bottomNavigationBar: BottomAppBar(

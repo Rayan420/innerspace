@@ -21,7 +21,7 @@ class LogIn extends StatefulWidget {
 
 class _LogInState extends State<LogIn> {
   final passwordController = TextEditingController();
-  final emailController = TextEditingController();
+  final usernameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool signInRequired = false;
   IconData iconPassword = CupertinoIcons.eye_fill;
@@ -49,7 +49,7 @@ class _LogInState extends State<LogIn> {
         } else if (state is SignInFailure) {
           setState(() {
             signInRequired = false;
-            _errorMsg = 'Invalid email or password';
+            _errorMsg = 'Invalid username or password';
           });
         }
       },
@@ -81,10 +81,10 @@ class _LogInState extends State<LogIn> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               MyTextField(
-                                controller: emailController,
-                                hintText: 'Email',
+                                controller: usernameController,
+                                hintText: 'Username',
                                 obscureText: false,
-                                keyboardType: TextInputType.emailAddress,
+                                keyboardType: TextInputType.text,
                                 prefixIcon:
                                     const Icon(CupertinoIcons.person_fill),
                                 validator: (val) {
@@ -164,7 +164,7 @@ class _LogInState extends State<LogIn> {
                                                 .isConnected()) {
                                               context.read<SignInBloc>().add(
                                                   SignInRequired(
-                                                      emailController.text,
+                                                      usernameController.text,
                                                       passwordController.text));
                                             } else {
                                               ScaffoldMessenger.of(context)
