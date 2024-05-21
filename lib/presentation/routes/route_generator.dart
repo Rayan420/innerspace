@@ -11,7 +11,7 @@ import 'package:innerspace/presentation/screens/authentication/login/login_scree
 import 'package:innerspace/presentation/screens/authentication/reset_password/forgot_password.dart';
 import 'package:innerspace/presentation/screens/authentication/signup/profile_registration.dart';
 import 'package:innerspace/presentation/screens/authentication/signup/signup_screen.dart';
-import 'package:innerspace/presentation/screens/splash.dart';
+import 'package:innerspace/presentation/widgets/authentication_widgets/splash.dart';
 import 'package:innerspace/presentation/screens/welcome/welcome.dart';
 import 'package:innerspace/presentation/screens/welcome/on_boarding_screen.dart';
 import 'package:user_repository/data.dart';

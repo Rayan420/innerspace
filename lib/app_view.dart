@@ -9,7 +9,7 @@ import 'package:innerspace/config/shared_preference_config.dart';
 import 'package:innerspace/presentation/routes/nav_bar.dart';
 import 'package:innerspace/presentation/routes/route_generator.dart';
 import 'package:innerspace/presentation/screens/authentication/login/login_screen.dart';
-import 'package:innerspace/presentation/screens/splash.dart';
+import 'package:innerspace/presentation/widgets/authentication_widgets/splash.dart';
 import 'package:innerspace/constants/theme/theme.dart';
 import 'package:innerspace/presentation/screens/welcome/welcome.dart';
 import 'package:user_repository/data.dart';

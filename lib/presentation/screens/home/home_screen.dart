@@ -11,7 +11,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: tSecondaryColor,
       appBar: AppBar(
         title: const Text('Welcome, you are In !'),
         actions: [
@@ -21,11 +20,6 @@ class HomeScreen extends StatelessWidget {
               },
               icon: const Icon(Icons.login))
         ],
-      ),
-      body: const Center(
-        child: Image(
-          image: AssetImage("assets/icons/noise.png"),
-        ),
       ),
     );
   }
