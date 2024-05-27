@@ -15,6 +15,7 @@ dependencies:
   http: ^1.2.0
   intl: ^0.18.0
   shared_preferences: ^2.0.8
+  flutter_client_sse: ^2.0.1
 
 
 

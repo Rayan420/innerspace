@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user_repository/src/models/models.dart';
+import 'package:user_repository/src/repositories/notification_repository.dart';
+import 'package:user_repository/src/utils/backedn_urls.dart';
 import 'user_repository.dart';
 
 enum AuthenticationStatus { authenticated, unauthenticated, unknown }
@@ -18,13 +20,14 @@ class AuthenticationRepository {
   final _controller = StreamController<
       AuthenticationStatus>.broadcast(); // Stream of auth status
   final _httpClient = http.Client();
-  final String _baseUrl;
+  final String _baseUrl = BackendUrls.development;
+
+  final NotificationRepository notificationRepository;
 
   AuthenticationRepository({
-    required String baseUrl,
     required UserRepository userRepository,
-  })  : _baseUrl = baseUrl,
-        _userRepository = userRepository {
+    required this.notificationRepository,
+  }) : _userRepository = userRepository {
     _initAuth();
   }
 
@@ -38,9 +41,13 @@ class AuthenticationRepository {
     // print(refreshToken);
     if (accessToken != null && refreshToken != null) {
       _token = Token(access: accessToken, refresh: refreshToken);
-      // refreesh the token, if refreshed token is not available, then the user is unauthenticated
+      // refresh the token, if refreshed token is not available, then the user is unauthenticated
       bool isRefreshed = await _refreshToken();
       if (isRefreshed) {
+        notificationRepository.subscribeToSSE(
+          _userRepository.user!.userId,
+          _token!.access,
+        );
         _controller.add(AuthenticationStatus.authenticated);
       }
     } else {
@@ -94,6 +101,10 @@ class AuthenticationRepository {
       _token = Token.fromJson(responseData['tokens']);
       await _userRepository.saveUserData(user); // Save user data to storage
       await _saveTokens(_token!);
+      notificationRepository.subscribeToSSE(
+        user.userId,
+        _token!.access,
+      );
       _controller.add(AuthenticationStatus.authenticated);
     } catch (e) {
       log('Failed to sign up: $e');
@@ -108,12 +119,13 @@ class AuthenticationRepository {
     required String dob,
   }) async {
     try {
-      final user = await _userRepository.userStream.first;
-      if (user == null) throw Exception('User is not available');
+      List<String> parts = dob.split('T');
+      dob = parts[0];
+      // convert dob to datetime
 
       // send multipart request to complete sign up
       final responseData = await sendMultipartRequest(
-        '$_baseUrl/auth/register/${user.username}/complete',
+        '$_baseUrl/profile/register/${_userRepository.user!.username}',
         headers: {
           'Authorization': 'Bearer ${_token!.access}',
           'Content-Type': 'multipart/form-data',
@@ -124,7 +136,7 @@ class AuthenticationRepository {
         },
         files: [
           http.MultipartFile.fromBytes(
-            'avatar',
+            'profile',
             avatar,
             filename: 'avatar.jpg',
             contentType: MediaType('image', 'jpeg'),
@@ -132,11 +144,12 @@ class AuthenticationRepository {
         ],
       );
 
-      if (responseData['user'] != null && responseData['tokens'] != null) {
-        final updatedUser = User.fromJson(responseData['user']);
-        _token = Token.fromJson(responseData['tokens']);
+      print(responseData);
+      if (responseData.isNotEmpty) {
+        _userRepository.user = User.fromJson(responseData);
+        final updatedUser = User.fromJson(responseData);
+        await _userRepository.clearUserData();
         await _userRepository.saveUserData(updatedUser);
-        await _saveTokens(_token!);
       } else {
         throw Exception('Failed to perform request: Response data is null');
       }
@@ -160,10 +173,17 @@ class AuthenticationRepository {
         },
       );
 
+      print(responseData);
       final user = User.fromJson(responseData['user']);
       _token = Token.fromJson(responseData['tokens']);
       await _userRepository.saveUserData(user); // Save user data to storage
       await _saveTokens(_token!);
+      notificationRepository.subscribeToSSE(
+        user.userId,
+        _token!.access,
+      );
+      print(
+          "followers: ${user.followers}, following: ${user.following}, length: ${user.followers!.length}");
       _controller.add(AuthenticationStatus.authenticated);
     } catch (e) {
       log('Failed to log in: $e');
@@ -174,11 +194,8 @@ class AuthenticationRepository {
 
   Future<void> logOut() async {
     try {
-      final user = await _userRepository.userStream.first;
-      if (user == null) throw Exception('User is not available');
-
       await _sendRequest(
-        '$_baseUrl/auth/logout/${user.username}',
+        '$_baseUrl/auth/logout/${_userRepository.user!.username}',
         headers: {
           'Authorization': 'Bearer ${_token!.access}',
         },

@@ -3,34 +3,35 @@ import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
 
+// ignore: must_be_immutable
 class UserProfile extends Equatable {
   final int profileId;
-  final Uint8List? profilePicture;
+  final String? profilePicture;
   final String? bio;
   final String lastUpdated;
-  final int followerCount;
-  final int followingCount;
+  int followerCount = 0;
+  int followingCount = 0;
   final int ownedSpaceCount;
   final int followedSpaceCount;
   final bool private;
 
-  const UserProfile({
+  UserProfile({
     required this.profileId,
     this.profilePicture,
     this.bio,
     required this.lastUpdated,
-    required this.followerCount,
-    required this.followingCount,
     required this.ownedSpaceCount,
     required this.followedSpaceCount,
     required this.private,
+    required followerCount,
+    required followingCount,
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
       profileId: json['profileId'],
-      profilePicture: _decodeProfilePicture(json['profilePicture']),
-      bio: json['bio'],
+      profilePicture: json['profileImageUrl'] ?? '',
+      bio: json['bio'] ?? '',
       lastUpdated: json['lastUpdated'],
       followerCount: json['followerCount'],
       followingCount: json['followingCount'],
@@ -50,7 +51,7 @@ class UserProfile extends Equatable {
   Map<String, dynamic> toJson() {
     return {
       'profileId': profileId,
-      'profilePicture': _encodeProfilePicture(profilePicture),
+      'profileImageUrl': profilePicture,
       'bio': bio,
       'lastUpdated': lastUpdated,
       'followerCount': followerCount,

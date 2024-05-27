@@ -16,7 +16,7 @@ class SignUpRequired extends SignUpEvent {
 class CompleteSignUp extends SignUpEvent {
   final Uint8List? image;
   final String bio;
-  final DateTime dob;
+  final String dob;
 
   const CompleteSignUp(this.image, this.bio, this.dob);
 }

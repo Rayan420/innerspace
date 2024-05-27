@@ -56,7 +56,7 @@ class AudioRecorderController {
     print("Recording paused.");
   }
 
-  void stop(Function(RecordingModel? voiceNoteModel) onStop) async {
+  Future<String?> stop(Function(RecordingModel? voiceNoteModel) onStop) async {
     final recordPath = await _audioRecorder.stop();
     if (recordPath != null) {
       onStop(RecordingModel(
@@ -70,7 +70,9 @@ class AudioRecorderController {
       print("Recording could not be stopped properly.");
     }
     _reset();
+    return recordPath;
   }
+
 
   Future<void> delete() async {
     await pause();

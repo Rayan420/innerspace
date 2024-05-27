@@ -16,8 +16,8 @@ import 'package:user_repository/data.dart';
 
 class AppView extends StatelessWidget {
   final String flavor;
-
-  const AppView({super.key, required this.flavor});
+  final NotificationRepository notificationRepository;
+  const AppView({super.key, required this.flavor, required this.notificationRepository});
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +27,16 @@ class AppView extends StatelessWidget {
       theme: TAppTheme.lightTheme,
       darkTheme: TAppTheme.darkTheme,
       onGenerateRoute: RouteGenerator.generateRoute,
-      home: InitialScreen(),
+      home: InitialScreen(
+        notificationRepository: notificationRepository,
+      ),
     );
   }
 }
 
 class InitialScreen extends StatelessWidget {
-  const InitialScreen({super.key});
+  const InitialScreen({super.key, required this.notificationRepository});
+  final NotificationRepository notificationRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +65,7 @@ class InitialScreen extends StatelessWidget {
                   return NavigationScreen(
                     userRepository:
                         context.read<AuthenticationBloc>().userRepository,
+                    notificationRepository: notificationRepository,
                   );
                 case AuthenticationStatus.unauthenticated:
                   return BlocProvider(

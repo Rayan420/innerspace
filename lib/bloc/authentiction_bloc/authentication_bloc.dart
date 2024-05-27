@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:user_repository/data.dart';
 
 part 'authentication_event.dart';
@@ -23,7 +24,9 @@ class AuthenticationBloc
     userRepository.loadUserData();
 
     on<_AuthenticationStatusChanged>(_onAuthenticationStatusChanged);
-    on<AuthenticationLogoutRequested>(_onAuthenticationLogoutRequested);
+    on<AuthenticationLogoutRequested>((event, emit) async {
+      await authRepository.logOut();
+    });
     _authenticationStatusSubscription = authenticationRepository.status.listen(
       (status) => add(_AuthenticationStatusChanged(status)),
     );
@@ -57,8 +60,8 @@ class AuthenticationBloc
   void _onAuthenticationLogoutRequested(
     AuthenticationLogoutRequested event,
     Emitter<AuthenticationState> emit,
-  ) {
-    authRepository.logOut();
+  ) async {
+    await authRepository.logOut();
   }
 
   Future<User?> _tryGetUser() async {

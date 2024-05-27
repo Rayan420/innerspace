@@ -9,14 +9,11 @@ class User extends Equatable {
   final String? lastName;
   final String? dateOfBirth;
   final String dateJoined;
-  final String lastLogin;
+  final String? lastLogin;
   final UserProfile userProfile;
-  final List<dynamic> sentFollowRequests;
-  final List<dynamic> receivedFollowRequests;
   final List<dynamic> authorities;
-  final List<dynamic> followers;
-  final List<dynamic> following;
-  final String name;
+  final List<dynamic>? following;
+  final List<dynamic>? followers;
   final bool enabled;
   final bool accountNonLocked;
   final bool credentialsNonExpired;
@@ -32,16 +29,13 @@ class User extends Equatable {
     required this.dateJoined,
     required this.lastLogin,
     required this.userProfile,
-    required this.sentFollowRequests,
-    required this.receivedFollowRequests,
     required this.authorities,
-    required this.followers,
-    required this.following,
-    required this.name,
     required this.enabled,
     required this.accountNonLocked,
     required this.credentialsNonExpired,
     required this.accountNonExpired,
+    required this.following,
+    required this.followers,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -51,20 +45,17 @@ class User extends Equatable {
       email: json['email'],
       firstName: json['firstName'],
       lastName: json['lastName'],
-      dateOfBirth: json['dateOfBirth'],
+      dateOfBirth: json['dateOfBirth'] ?? '',
       dateJoined: json['dateJoined'],
-      lastLogin: json['lastLogin'],
+      lastLogin: json['lastLogin'] ?? '',
       userProfile: UserProfile.fromJson(json['userProfile']),
-      sentFollowRequests: json['sentFollowRequests'],
-      receivedFollowRequests: json['receivedFollowRequests'],
       authorities: json['authorities'],
-      followers: json['followers'],
-      following: json['following'],
-      name: json['name'],
       enabled: json['enabled'],
       accountNonLocked: json['accountNonLocked'],
       credentialsNonExpired: json['credentialsNonExpired'],
       accountNonExpired: json['accountNonExpired'],
+      following: json['following'] ?? [],
+      followers: json['followers'] ?? [],
     );
   }
 
@@ -79,12 +70,7 @@ class User extends Equatable {
       'dateJoined': dateJoined,
       'lastLogin': lastLogin,
       'userProfile': userProfile.toJson(),
-      'sentFollowRequests': sentFollowRequests,
-      'receivedFollowRequests': receivedFollowRequests,
       'authorities': authorities,
-      'followers': followers,
-      'following': following,
-      'name': name,
       'enabled': enabled,
       'accountNonLocked': accountNonLocked,
       'credentialsNonExpired': credentialsNonExpired,
@@ -103,12 +89,7 @@ class User extends Equatable {
         dateJoined,
         lastLogin,
         userProfile,
-        sentFollowRequests,
-        receivedFollowRequests,
         authorities,
-        followers,
-        following,
-        name,
         enabled,
         accountNonLocked,
         credentialsNonExpired,

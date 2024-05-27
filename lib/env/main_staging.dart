@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:innerspace/app.dart';
-import 'package:innerspace/config/backedn_urls.dart';
 import 'package:innerspace/config/shared_preference_config.dart';
 import 'package:user_repository/data.dart';
 
@@ -10,10 +9,15 @@ void main() async {
   // Initialize UserRepository and load user data
   UserRepository userRepository = UserRepository();
 
+  // initialize notification repository
+  NotificationRepository notificationRepository = NotificationRepository(
+    
+  );
+
   // Initialize AuthenticationRepository
   AuthenticationRepository authRepository = AuthenticationRepository(
-    baseUrl: BackendUrls.development,
     userRepository: userRepository,
+    notificationRepository: notificationRepository,
   );
 
   SharedPreferencesConfig.initialize();
@@ -22,5 +26,6 @@ void main() async {
     flavor: 'staging',
     userRepository: userRepository,
     authRepository: authRepository,
+    notificationRepository: notificationRepository,
   ));
 }
