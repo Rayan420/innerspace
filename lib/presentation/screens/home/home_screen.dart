@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:innerspace/bloc/authentiction_bloc/authentication_bloc.dart';
 import 'package:innerspace/bloc/sign_in_bloc/sign_in_bloc.dart';
 import 'package:innerspace/constants/colors.dart';
 
@@ -16,7 +17,7 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                context.read<SignInBloc>().add(const SignOutRequired());
+                context.read<AuthenticationBloc>().add(AuthenticationLogoutRequested());
               },
               icon: const Icon(Icons.login))
         ],

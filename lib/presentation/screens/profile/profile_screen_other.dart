@@ -1,21 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:innerspace/constants/colors.dart';
-import 'package:user_repository/data.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen(
-      {super.key, required this.userRepository, required this.isdarkmode});
+class ProfileScreenOther extends StatefulWidget {
+  const ProfileScreenOther({super.key, required this.isdarkmode});
 
-  final UserRepository userRepository;
   final bool isdarkmode;
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  _ProfileScreenOtherState createState() => _ProfileScreenOtherState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen>
+class _ProfileScreenOtherState extends State<ProfileScreenOther>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -42,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               style: TextStyle(fontSize: 24, fontFamily: 'Montserrat'),
             ),
             Text(
-              widget.userRepository.user!.username,
+              "user",
               style: const TextStyle(fontSize: 24, fontFamily: 'Poppins'),
             ),
           ],
@@ -62,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             clipBehavior: Clip.none,
             children: [
               Container(
-                height: MediaQuery.of(context).size.height * 0.15,
+                height: 180,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('assets/images/cover_image.jpg'),
@@ -72,18 +68,12 @@ class _ProfileScreenState extends State<ProfileScreen>
               ),
               Positioned(
                 bottom: -60,
-                left: 15.0,
+                left: 20.0,
                 child: CircleAvatar(
                   radius: 35,
                   backgroundImage:
-                      widget.userRepository.user!.userProfile.profilePicture !=
-                                  null &&
-                              widget.userRepository.user!.userProfile
-                                  .profilePicture!.isNotEmpty
-                          ? NetworkImage(widget
-                              .userRepository.user!.userProfile.profilePicture!)
-                          : AssetImage('assets/images/profile1.png')
-                              as ImageProvider,
+                      const AssetImage('assets/images/profile1.png')
+                          as ImageProvider,
                   backgroundColor: Colors.white,
                 ),
               ),
@@ -99,9 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     'Following',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
-                  Text(
-                      widget.userRepository.user!.userProfile.followingCount
-                          .toString(),
+                  Text('count',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 15))
                 ],
@@ -112,9 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   const Text('Followers',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                  Text(
-                      widget.userRepository.user!.userProfile.followerCount
-                          .toString(),
+                  Text('count',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 15))
                 ],
@@ -127,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 height: MediaQuery.of(context).size.height * 0.047,
                 child: TextButton(
                   onPressed: () {
-                    // Add your edit button logic here
+                    // Add your follow button logic here
                   },
                   style: TextButton.styleFrom(
                     backgroundColor: tPrimaryColor,
@@ -138,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ),
                   child: const Center(
                     child: Text(
-                      'Edit',
+                      'Follow',
                       style: TextStyle(
                         fontSize: 16,
                       ),
@@ -157,7 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 width: 15,
               ),
               Text(
-                "${widget.userRepository.user!.firstName} ${widget.userRepository.user!.lastName}",
+                "user name",
                 style: const TextStyle(
                     fontSize: 18,
                     fontFamily: 'Poppins',
@@ -165,7 +151,9 @@ class _ProfileScreenState extends State<ProfileScreen>
               ),
             ],
           ),
-
+          const SizedBox(
+            height: 10,
+          ),
           Row(
             children: [
               const SizedBox(
@@ -174,57 +162,16 @@ class _ProfileScreenState extends State<ProfileScreen>
               Container(
                 width: MediaQuery.of(context).size.width * 0.7,
                 child: Text(
-                  widget.userRepository.user!.userProfile.bio ?? "",
+                  "bio here",
                   style: const TextStyle(fontSize: 14),
                   overflow: TextOverflow.clip,
                 ),
               ),
             ],
           ),
-          // add date joined and date of birth
           const SizedBox(
-            height: 5,
+            height: 20,
           ),
-          Row(
-            children: [
-              const SizedBox(
-                width: 6,
-              ),
-              const Icon(
-                Iconsax.calendar5,
-                color: Colors.grey,
-                size: 15,
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Text(
-                'Joined ${widget.userRepository.user!.dateJoined}',
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-            ],
-          ),
-
-          Row(
-            children: [
-              const SizedBox(
-                width: 6,
-              ),
-              const Icon(
-                Iconsax.calendar5,
-                color: Colors.grey,
-                size: 15,
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Text(
-                'Born on ${widget.userRepository.user!.dateOfBirth}',
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-            ],
-          ),
-
           TabBar(
             controller: _tabController,
             labelColor: tPrimaryColor,

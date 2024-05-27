@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:innerspace/constants/colors.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class Avatar extends StatefulWidget {
@@ -117,7 +118,7 @@ class AvatarState extends State<Avatar> {
                       width: 3,
                       color: Theme.of(context).scaffoldBackgroundColor,
                     ),
-                    color: Colors.green,
+                    color: tPrimaryColor,
                   ),
                   child: const Icon(
                     Icons.add,
@@ -244,7 +245,7 @@ class AvatarState extends State<Avatar> {
         uiSettings: [
           AndroidUiSettings(
               toolbarTitle: "Image Cropper",
-              toolbarColor: Colors.deepOrange,
+              toolbarColor: tPrimaryColor,
               toolbarWidgetColor: Colors.white,
               initAspectRatio: CropAspectRatioPreset.original,
               lockAspectRatio: false),
@@ -258,6 +259,7 @@ class AvatarState extends State<Avatar> {
         _selectedImageBytes = bytes;
       });
       widget.onImageSelected(_selectedImageBytes);
+      print(_selectedImageBytes);
     }
   }
 

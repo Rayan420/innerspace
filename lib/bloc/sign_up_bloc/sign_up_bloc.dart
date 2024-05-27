@@ -37,10 +37,10 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     on<CompleteSignUp>((event, emit) async {
       emit(ProfileSignUpProcess());
       try {
-        DateTime dob = DateTime.parse(event.dob.toIso8601String());
+
 
         await _authRepository.signUpComplete(
-            bio: event.bio, avatar: event.image!, dob: dob.toIso8601String());
+            bio: event.bio, avatar: event.image!, dob: event.dob);
         emit(const ProfileSignUpSuccess());
       } catch (e) {
         emit(ProfileSignUpFailure(message: e.toString()));

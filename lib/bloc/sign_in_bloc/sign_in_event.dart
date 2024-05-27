@@ -14,8 +14,5 @@ class SignInRequired extends SignInEvent {
   const SignInRequired(this.email, this.password);
 }
 
-class SignOutRequired extends SignInEvent {
-  const SignOutRequired();
-}
 
 

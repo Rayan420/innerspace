@@ -68,5 +68,5 @@ const tResetPassword = "Reset Password";
 const tSetProfileTitle = "Set Up Your Profile";
 const tSetProfileSubtitle =
     "Please provide the following information to complete your profile setup";
-const tBio = "Bio";
+const tBio = "Add a bio: ";
 const tSetup = "Setup";

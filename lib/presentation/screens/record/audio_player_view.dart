@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:innerspace/presentation/widgets/record_widgets/glowing_avatar.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:innerspace/constants/colors.dart';
 
-class AudioPlayerView extends StatelessWidget {
+class AudioPlayerView extends StatefulWidget {
   final String audioPath;
   final VoidCallback onPost;
   final VoidCallback onCancel;
@@ -17,6 +19,29 @@ class AudioPlayerView extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _AudioPlayerViewState createState() => _AudioPlayerViewState();
+}
+
+class _AudioPlayerViewState extends State<AudioPlayerView> {
+  late AudioPlayer _audioPlayer;
+  late Stream<PlayerState> _playerStateStream;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _audioPlayer = AudioPlayer()..setFilePath(widget.audioPath);
+    _playerStateStream = _audioPlayer.playerStateStream;
+    print('Path for player set at ${widget.audioPath}');
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -26,50 +51,76 @@ class AudioPlayerView extends StatelessWidget {
           children: [
             TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: isDarkMode ? tWhiteColor : tSecondaryColor,
+                backgroundColor: widget.isDarkMode ? tWhiteColor : tSecondaryColor,
               ),
-              onPressed: onCancel,
+              onPressed: widget.onCancel,
               child: Text(
                 'Cancel',
-                style: TextStyle(color: isDarkMode ? tBlackColor : tWhiteColor),
+                style: TextStyle(color: widget.isDarkMode ? tBlackColor : tWhiteColor),
               ),
             ),
             TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: isDarkMode ? tWhiteColor : tSecondaryColor,
+                backgroundColor: widget.isDarkMode ? tWhiteColor : tSecondaryColor,
               ),
+              onPressed: widget.onPost,
               child: Text(
                 'Post',
-                style: TextStyle(color: isDarkMode ? tBlackColor : tWhiteColor),
+                style: TextStyle(color: widget.isDarkMode ? tBlackColor : tWhiteColor),
               ),
-              onPressed: onPost,
             ),
           ],
-        ),
-        const SizedBox(height: 16),
-        CircleAvatar(
-          radius: 50,
-          backgroundImage: const AssetImage('assets/images/profile1.png'),
-          backgroundColor: Colors.grey.shade200,
         ),
         const Text(
           'Listen to your recording',
           style: TextStyle(fontSize: 18),
         ),
-        const SizedBox(height: 16),
-        Card(
+        Container(
           margin: const EdgeInsets.symmetric(horizontal: 16),
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundImage: const AssetImage('assets/images/profile1.png'),
+          width: MediaQuery.of(context).size.width * 0.7,
+          height: MediaQuery.of(context).size.width * 0.5,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFF144771), Color(0xFF071A2C)],
             ),
-            title: Text('Recording'),
-            trailing: IconButton(
-              icon: Icon(Icons.play_arrow, color: tPrimaryColor),
-              onPressed: () {
-                // Implement audio play logic here
-              },
-            ),
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                spreadRadius: 2,
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: StreamBuilder<PlayerState>(
+            stream: _playerStateStream,
+            builder: (context, snapshot) {
+              final playerState = snapshot.data;
+              final playing = playerState?.playing ?? false;
+              final processingState = playerState?.processingState;
+
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  if (playing && processingState != ProcessingState.completed)
+                    const GlowingAvatar()
+                  else
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: const AssetImage('assets/images/profile1.png'),
+                      backgroundColor: Colors.grey.shade200,
+                    ),
+                  Controls(
+                    audioPlayer: _audioPlayer,
+                    processingState: processingState,
+                    playing: playing,
+                  ),
+                ],
+              );
+            },
           ),
         ),
         Row(
@@ -89,5 +140,53 @@ class AudioPlayerView extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class Controls extends StatelessWidget {
+  const Controls({
+    Key? key,
+    required this.audioPlayer,
+    required this.processingState,
+    required this.playing,
+  }) : super(key: key);
+
+  final AudioPlayer audioPlayer;
+  final ProcessingState? processingState;
+  final bool playing;
+
+  @override
+  Widget build(BuildContext context) {
+    if (processingState == ProcessingState.completed) {
+      return IconButton(
+        onPressed: () {
+          audioPlayer.seek(Duration.zero);
+          audioPlayer.play();
+        },
+        icon: Icon(
+          Icons.replay,
+          color: Colors.white.withOpacity(0.8),
+          size: 50,
+        ),
+      );
+    } else if (!playing) {
+      return IconButton(
+        onPressed: audioPlayer.play,
+        icon: const Icon(
+          Iconsax.play,
+          color: Colors.white,
+          size: 50,
+        ),
+      );
+    } else {
+      return IconButton(
+        onPressed: audioPlayer.pause,
+        icon: const Icon(
+          Iconsax.pause,
+          color: Colors.white,
+          size: 50,
+        ),
+      );
+    }
   }
 }
