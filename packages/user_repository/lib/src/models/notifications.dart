@@ -1,8 +1,6 @@
 // ignore: file_names
 import 'package:equatable/equatable.dart';
 
-import 'package:equatable/equatable.dart';
-
 class Notifications extends Equatable {
   final int id;
   final String message;
@@ -16,7 +14,7 @@ class Notifications extends Equatable {
   final String type;
   final DateTime createdAt; // New property for storing the creation time
 
-  Notifications({
+  const Notifications({
     required this.id,
     required this.message,
     required this.ownerId,
@@ -42,7 +40,8 @@ class Notifications extends Equatable {
       senderName: json['senderName'],
       senderUsername: json['senderUsername'],
       type: json['notificationType'],
-      createdAt: DateTime.parse(json['createdAt']), // Parse and assign the createdAt value
+      createdAt: DateTime.parse(
+          json['createdAt']), // Parse and assign the createdAt value
     );
   }
 
@@ -58,14 +57,26 @@ class Notifications extends Equatable {
       'senderName': senderName,
       'senderUsername': senderUsername,
       'type': type,
-      'createdAt': createdAt.toIso8601String(), // Serialize DateTime to ISO 8601 string
+      'createdAt':
+          createdAt.toIso8601String(), // Serialize DateTime to ISO 8601 string
     };
   }
 
   @override
-  List<Object?> get props => [id, message, ownerId, senderId, read, deleted, senderImage, senderName, senderUsername, type, createdAt];
+  List<Object?> get props => [
+        id,
+        message,
+        ownerId,
+        senderId,
+        read,
+        deleted,
+        senderImage,
+        senderName,
+        senderUsername,
+        type,
+        createdAt
+      ];
 }
-
 
 class FollowNotification extends Notifications {
   final String? senderBio;

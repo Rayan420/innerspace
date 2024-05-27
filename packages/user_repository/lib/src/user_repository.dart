@@ -172,8 +172,7 @@ class UserRepository {
       );
       print(responseData);
 
-      if (responseData != null &&
-          responseData['user'] != null &&
+      if (responseData['user'] != null &&
           responseData['tokens'] != null) {
         _user = User.fromJson(responseData['user']);
         _token = Token.fromJson(responseData['tokens']);
