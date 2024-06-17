@@ -39,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen>
       listener: (context, state) {
         // TODO: implement listener
       },
-      child: Scaffold(di
+      child: Scaffold(
         appBar: AppBar(
           title: Row(
             children: [
