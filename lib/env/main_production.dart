@@ -14,7 +14,7 @@ void main() async {
   // initialize notification repository
 // initialize notification repository
   NotificationRepository notificationRepository = NotificationRepository(
-    
+    userRepository: userRepository,
   );
 
   // Initialize AuthenticationRepository

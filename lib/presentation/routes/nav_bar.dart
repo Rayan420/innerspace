@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:innerspace/bloc/profile_bloc/profile_bloc.dart';
 import 'package:innerspace/constants/colors.dart';
 import 'package:innerspace/data/controller/recording/audi_recording_controller.dart';
 import 'package:innerspace/data/controller/recording/audio_recorder_file_helper.dart';
@@ -36,7 +36,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
   void initState() {
     super.initState();
     // Listen for new notifications
-    widget.notificationRepository.notificationStream.listen((notifications) {
+    widget.notificationRepository.notificationsNotifier.addListener(() {
+      final notifications =
+          widget.notificationRepository.notificationsNotifier.value;
       if (notifications.isNotEmpty) {
         // Calculate the time difference between now and the first notification's createdAt time
         final firstNotificationTime = notifications.first.createdAt;
@@ -46,11 +48,13 @@ class _NavigationScreenState extends State<NavigationScreen> {
         // If the time difference is within 30 seconds, consider it a new notification
         if (difference.inSeconds <= 30) {
           // Update hasNewNotification whenever new notifications arrive
-          setState(() {
-            hasNewNotification = true;
-          });
-          // Show a top snackbar with notification message
-          showNotificationTopSnackbar(context, notifications.first.message);
+          if (mounted) {
+            setState(() {
+              hasNewNotification = true;
+            });
+            // Show a top snackbar with notification message
+            showNotificationTopSnackbar(context, notifications.first.message);
+          }
         }
       }
     });
@@ -74,10 +78,14 @@ class _NavigationScreenState extends State<NavigationScreen> {
           NotificationView(
             notificationRepository: widget.notificationRepository,
           ),
-          // Placeholder for the middle button
-          ProfileScreen(
-            userRepository: widget.userRepository,
-            isdarkmode: isDarkMode,
+          BlocProvider(
+            create: (context) => ProfileBloc(
+              userRepository: widget.userRepository,
+            ),
+            child: ProfileScreen(
+              userRepository: widget.userRepository,
+              isdarkmode: isDarkMode,
+            ),
           ),
         ],
       ),
@@ -107,7 +115,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
             BottomNavigationBarItem(
               icon: Stack(
                 children: [
-                  Icon(Iconsax.notification),
+                  const Icon(Iconsax.notification),
                   if (hasNewNotification)
                     Positioned(
                       right: 0,
@@ -115,7 +123,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                       child: Container(
                         width: 10,
                         height: 10,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.red,
                           shape: BoxShape.circle,
                         ),

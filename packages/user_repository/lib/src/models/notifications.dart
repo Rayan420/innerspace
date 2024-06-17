@@ -1,5 +1,5 @@
-// ignore: file_names
 import 'package:equatable/equatable.dart';
+import 'package:user_repository/src/utils/backend_urls.dart';
 
 class Notifications extends Equatable {
   final int id;
@@ -8,13 +8,13 @@ class Notifications extends Equatable {
   final int senderId;
   final bool read;
   final bool deleted;
-  final String? senderImage;
+  String? senderImage;
   final String senderName;
   final String senderUsername;
   final String type;
-  final DateTime createdAt; // New property for storing the creation time
+  final DateTime createdAt;
 
-  const Notifications({
+  Notifications({
     required this.id,
     required this.message,
     required this.ownerId,
@@ -25,8 +25,10 @@ class Notifications extends Equatable {
     required this.senderName,
     required this.senderUsername,
     required this.type,
-    required this.createdAt, // Initialize the new property
-  });
+    required this.createdAt,
+  }) {
+    senderImage = BackendUrls.replaceLocalhost(senderImage ?? '');
+  }
 
   factory Notifications.fromJson(Map<String, dynamic> json) {
     return Notifications(
@@ -36,12 +38,11 @@ class Notifications extends Equatable {
       senderId: json['senderId'],
       read: json['read'],
       deleted: json['deleted'],
-      senderImage: json['senderImage'],
+      senderImage: BackendUrls.replaceLocalhost(json['senderImage'] ?? ''),
       senderName: json['senderName'],
       senderUsername: json['senderUsername'],
       type: json['notificationType'],
-      createdAt: DateTime.parse(
-          json['createdAt']), // Parse and assign the createdAt value
+      createdAt: DateTime.parse(json['createdAt']),
     );
   }
 
@@ -57,8 +58,7 @@ class Notifications extends Equatable {
       'senderName': senderName,
       'senderUsername': senderUsername,
       'type': type,
-      'createdAt':
-          createdAt.toIso8601String(), // Serialize DateTime to ISO 8601 string
+      'createdAt': createdAt.toIso8601String(),
     };
   }
 
@@ -108,7 +108,7 @@ class FollowNotification extends Notifications {
       senderId: json['senderId'],
       read: json['read'],
       deleted: json['deleted'],
-      senderImage: json['senderImage'],
+      senderImage: BackendUrls.replaceLocalhost(json['senderImage'] ?? ''),
       senderName: json['senderName'],
       senderUsername: json['senderUsername'],
       type: json['notificationType'],
@@ -154,7 +154,7 @@ class LikeNotification extends Notifications {
       senderId: json['senderId'],
       read: json['read'],
       deleted: json['deleted'],
-      senderImage: json['senderImage'],
+      senderImage: BackendUrls.replaceLocalhost(json['senderImage'] ?? ''),
       senderName: json['senderName'],
       senderUsername: json['senderUsername'],
       type: json['notificationType'],

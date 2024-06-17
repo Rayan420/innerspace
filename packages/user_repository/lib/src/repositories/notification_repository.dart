@@ -1,15 +1,26 @@
-import 'dart:async';
-import 'dart:convert'; // Import for jsonDecode
+import 'dart:convert';
 import 'package:flutter_client_sse/constants/sse_request_type_enum.dart';
 import 'package:flutter_client_sse/flutter_client_sse.dart';
+import 'package:user_repository/data.dart';
 import 'package:user_repository/src/models/notifications.dart';
-import 'package:user_repository/src/utils/backedn_urls.dart';
+import 'package:user_repository/src/utils/backend_urls.dart';
+import 'package:flutter/foundation.dart';
 
 class NotificationRepository {
   final _notifications = <Notifications>[];
-  final _controller = StreamController<List<Notifications>>.broadcast();
-  Stream<List<Notifications>> get notificationStream => _controller.stream;
-  final String _baseUrl = BackendUrls.development;
+  final ValueNotifier<List<Notifications>> _notificationsNotifier =
+      ValueNotifier([]);
+  ValueNotifier<List<Notifications>> get notificationsNotifier =>
+      _notificationsNotifier;
+
+  final String _baseUrl = BackendUrls.developmentBaseUrl;
+  final UserRepository _userRepository;
+
+  NotificationRepository({required UserRepository userRepository})
+      : _userRepository = userRepository {
+    // Emit initial empty state
+    _notificationsNotifier.value = _notifications;
+  }
 
   void subscribeToSSE(int userId, String accessToken) {
     final url = '$_baseUrl/notifications/subscribe/$userId';
@@ -24,7 +35,6 @@ class NotificationRepository {
       },
     ).listen(
       (event) {
-        print('Event: ${event.data}');
         if (event.data != null) {
           try {
             final data = jsonDecode(event.data!);
@@ -33,23 +43,20 @@ class NotificationRepository {
               final newNotifications = data
                   .map<Notifications>((json) => _mapJsonToNotification(json))
                   .toList();
-              _notifications.insertAll(
-                  0, newNotifications); // Prepend to the list
+              _notifications.insertAll(0, newNotifications);
             } else if (data is Map<String, dynamic>) {
               final notification = _mapJsonToNotification(data);
-              
-              _notifications.insert(0, notification); // Prepend to the list
-            } else {
-              print('Unexpected data format: ${event.data}');
+              if (notification is FollowNotification) {
+                _userRepository.updateUserFollowerCount();
+              }
+              _notifications.insert(0, notification);
             }
 
             // Send the updated list of notifications from newest to oldest
-            _controller.add(_notifications);
+            _notificationsNotifier.value = List.from(_notifications);
           } catch (e) {
             print('Error parsing event data: $e');
           }
-        } else {
-          print('Received null event data');
         }
       },
       onError: (error) {
@@ -57,8 +64,17 @@ class NotificationRepository {
       },
       onDone: () {
         print('Done!');
+        // cleanup the connection
+        SSEClient.unsubscribeFromSSE();
       },
     );
+  }
+
+  // cleanup the connection
+  void unsubscribeFromSSE() {
+    SSEClient.unsubscribeFromSSE();
+    // cleanup the notifications list
+    _notifications.clear();
   }
 
   Notifications _mapJsonToNotification(Map<String, dynamic> json) {
@@ -71,9 +87,5 @@ class NotificationRepository {
       default:
         return Notifications.fromJson(json);
     }
-  }
-
-  void dispose() {
-    _controller.close();
   }
 }

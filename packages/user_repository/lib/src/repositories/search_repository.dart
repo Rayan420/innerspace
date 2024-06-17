@@ -3,14 +3,14 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../../data.dart';
-import '../utils/backedn_urls.dart';
+import '../utils/backend_urls.dart';
 
 class SearchRepository {
   final _controller = StreamController<List<User?>>.broadcast();
   Stream<List<User?>> get userStream => _controller.stream;
 
   final _httpClient = http.Client();
-  final String _baseUrl = BackendUrls.development;
+  final String _baseUrl = BackendUrls.developmentBaseUrl;
   Timer? _debounceTimer;
   final Map<String, List<User?>> _cache = {};
 

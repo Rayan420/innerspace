@@ -9,7 +9,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user_repository/src/models/models.dart';
 import 'package:user_repository/src/repositories/notification_repository.dart';
-import 'package:user_repository/src/utils/backedn_urls.dart';
+import 'package:user_repository/src/utils/backend_urls.dart';
 import 'user_repository.dart';
 
 enum AuthenticationStatus { authenticated, unauthenticated, unknown }
@@ -20,7 +20,7 @@ class AuthenticationRepository {
   final _controller = StreamController<
       AuthenticationStatus>.broadcast(); // Stream of auth status
   final _httpClient = http.Client();
-  final String _baseUrl = BackendUrls.development;
+  final String _baseUrl = BackendUrls.developmentBaseUrl;
 
   final NotificationRepository notificationRepository;
 
@@ -44,6 +44,7 @@ class AuthenticationRepository {
       // refresh the token, if refreshed token is not available, then the user is unauthenticated
       bool isRefreshed = await _refreshToken();
       if (isRefreshed) {
+        
         notificationRepository.subscribeToSSE(
           _userRepository.user!.userId,
           _token!.access,
@@ -201,6 +202,7 @@ class AuthenticationRepository {
         },
       );
       await _userRepository.clearUserData(); // Clear user data from storage
+      notificationRepository.unsubscribeFromSSE();
       await _clearToken();
       _controller.add(AuthenticationStatus.unauthenticated);
     } catch (e) {
@@ -311,6 +313,11 @@ class AuthenticationRepository {
       log('Failed to refresh token: $e');
       return false;
     }
+  }
+
+  // public method to refresh the token
+  Future<bool> refreshToken() async {
+    return await _refreshToken();
   }
 
   Future<Map<String, dynamic>> sendMultipartRequest(

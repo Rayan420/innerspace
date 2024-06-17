@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:user_repository/src/utils/backend_urls.dart';
 
 import 'package:equatable/equatable.dart';
 
 // ignore: must_be_immutable
 class UserProfile extends Equatable {
   final int profileId;
-  final String? profilePicture;
+  String? profilePicture;
   final String? bio;
   final String lastUpdated;
   int followerCount = 0;
@@ -25,12 +26,15 @@ class UserProfile extends Equatable {
     required this.private,
     required followerCount,
     required followingCount,
-  });
+  }) {
+    profilePicture = BackendUrls.replaceLocalhost(profilePicture ?? '');
+  }
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
       profileId: json['profileId'],
-      profilePicture: json['profileImageUrl'] ?? '',
+      profilePicture:
+          BackendUrls.replaceLocalhost(json['profileImageUrl'] ?? ''),
       bio: json['bio'] ?? '',
       lastUpdated: json['lastUpdated'],
       followerCount: json['followerCount'],

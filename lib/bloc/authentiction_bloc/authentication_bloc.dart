@@ -20,8 +20,6 @@ class AuthenticationBloc
   })  : authRepository = authenticationRepository,
         userRepository = userRepo,
         super(const AuthenticationState.unknown()) {
-    userRepository.loadUserData();
-
     on<_AuthenticationStatusChanged>(_onAuthenticationStatusChanged);
     on<AuthenticationLogoutRequested>(_onAuthenticationLogoutRequested);
     _authenticationStatusSubscription = authenticationRepository.status.listen(
