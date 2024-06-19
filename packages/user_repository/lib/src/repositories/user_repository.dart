@@ -15,10 +15,8 @@ class UserRepository {
     _initStorage();
   }
 
-  // Stream of user data
   Stream<User> get userStream => _controller.stream;
 
-  // Method to initialize storage
   Future<void> _initStorage() async {
     await loadUserData();
   }
@@ -27,41 +25,48 @@ class UserRepository {
     return user!;
   }
 
-  // method to update user follower count and push to stream
-  void updateUserFollowerCount() {
-    user!.userProfile.followerCount++;
-    _controller.add(user!);
-  }
-
-  // Method to load user data from storage
   Future<User?> loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final userDataString = prefs.getString('userData');
     final accessToken = prefs.getString('accessToken');
-    if (userDataString != null) {
-      // send request to get user data
-      final response = await _httpClient.get(
-        Uri.parse(
-            '$_baseUrl/user/load/${json.decode(userDataString)['userId']}'),
+
+    if (userDataString != null && accessToken != null) {
+      final userId = json.decode(userDataString)['userId'];
+      final responseData = await _httpClient.get(
+        Uri.parse('$_baseUrl/user/load/$userId'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $accessToken',
         },
       );
 
-      final resUser = json.decode(response.body);
-      user = User.fromJson(resUser['user']);
-      return user;
-    } else {
-      // _controller.add(null);
+      if (responseData.statusCode == 200) {
+        print(
+            'User data loaded from server successfully: ${responseData.body}');
+        final response = json.decode(responseData.body);
+
+        // Check structure of response
+        if (response.containsKey('user')) {
+          final userJson = response['user'];
+          final finalUser = User.fromJson(userJson);
+          user = finalUser;
+          print('User data converted to User object: ${finalUser.toJson()}');
+          _controller.add(finalUser); // Update user data stream
+          return user;
+        } else {
+          print('Error: "user" key not found in response');
+        }
+      } else {
+        print(
+            'Error: Failed to fetch user data, status code: ${responseData.statusCode}');
+      }
     }
     return null;
   }
 
-  // Method to save user data to storage
   Future<void> saveUserData(User user) async {
     final prefs = await SharedPreferences.getInstance();
-    user = user;
+    this.user = user;
     final userData = {
       'userId': user.userId,
       'email': user.email,
@@ -70,14 +75,13 @@ class UserRepository {
     _controller.add(user); // Update user data stream
   }
 
-  // Method to clear user data
   Future<void> clearUserData() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('userData');
-    // _controller.add(null); // Clear user data
+    user = null;
+    // _controller.add(null); // Clear user data stream
   }
 
-  // Method to update specific user data
   Future<void> updateUserField(String fieldName, dynamic value) async {
     final prefs = await SharedPreferences.getInstance();
     if (user != null) {

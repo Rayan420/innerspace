@@ -1,41 +1,41 @@
 import 'package:equatable/equatable.dart';
-import 'package:user_repository/data.dart';
+import 'package:user_repository/data.dart'; // Ensure this import is correct based on your project structure
 
 class User extends Equatable {
-  final int userId;
-  final String username;
-  final String email;
-  final String? firstName;
-  final String? lastName;
-  final String? dateOfBirth;
+  int userId;
+  String username;
+  String email;
+  String? firstName;
+  String? lastName;
+  String? dateOfBirth;
   final String dateJoined;
   final String? lastLogin;
-  final UserProfile userProfile;
-  final List<dynamic> authorities;
-  final List<dynamic>? following;
-  final List<dynamic>? followers;
-  final bool enabled;
-  final bool accountNonLocked;
-  final bool credentialsNonExpired;
-  final bool accountNonExpired;
+  UserProfile userProfile;
+  List<dynamic> authorities;
+  List<LightweightUser> following; // Updated type for following
+  List<LightweightUser> followers; // Updated type for followers
+  bool enabled;
+  bool accountNonLocked;
+  bool credentialsNonExpired;
+  bool accountNonExpired;
 
-  const User({
+  User({
     required this.userId,
     required this.username,
     required this.email,
-    this.firstName,
-    this.lastName,
-    this.dateOfBirth,
+    required this.firstName,
+    required this.lastName,
+    required this.dateOfBirth,
     required this.dateJoined,
     required this.lastLogin,
     required this.userProfile,
     required this.authorities,
+    required this.following,
+    required this.followers,
     required this.enabled,
     required this.accountNonLocked,
     required this.credentialsNonExpired,
     required this.accountNonExpired,
-    required this.following,
-    required this.followers,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -50,12 +50,16 @@ class User extends Equatable {
       lastLogin: json['lastLogin'] ?? '',
       userProfile: UserProfile.fromJson(json['userProfile']),
       authorities: json['authorities'],
+      following: (json['following'] as List<dynamic>? ?? [])
+          .map((e) => LightweightUser.fromJson(e))
+          .toList(),
+      followers: (json['followers'] as List<dynamic>? ?? [])
+          .map((e) => LightweightUser.fromJson(e))
+          .toList(),
       enabled: json['enabled'],
       accountNonLocked: json['accountNonLocked'],
       credentialsNonExpired: json['credentialsNonExpired'],
       accountNonExpired: json['accountNonExpired'],
-      following: json['following'] ?? [],
-      followers: json['followers'] ?? [],
     );
   }
 
@@ -71,6 +75,12 @@ class User extends Equatable {
       'lastLogin': lastLogin,
       'userProfile': userProfile.toJson(),
       'authorities': authorities,
+      'following': following
+          .map((e) => e.toJson())
+          .toList(), // Convert following to JSON
+      'followers': followers
+          .map((e) => e.toJson())
+          .toList(), // Convert followers to JSON
       'enabled': enabled,
       'accountNonLocked': accountNonLocked,
       'credentialsNonExpired': credentialsNonExpired,
@@ -90,6 +100,8 @@ class User extends Equatable {
         lastLogin,
         userProfile,
         authorities,
+        following,
+        followers,
         enabled,
         accountNonLocked,
         credentialsNonExpired,

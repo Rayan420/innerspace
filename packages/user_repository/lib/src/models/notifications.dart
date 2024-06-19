@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:user_repository/src/utils/backend_urls.dart';
 
+// ignore: must_be_immutable
 class Notifications extends Equatable {
   final int id;
   final String message;
@@ -78,10 +79,60 @@ class Notifications extends Equatable {
       ];
 }
 
+// ignore: must_be_immutable
+class UnFollowNotification extends Notifications {
+  final String? senderBio;
+  final int followerCount;
+
+  UnFollowNotification({
+    required super.id,
+    required super.message,
+    required super.ownerId,
+    required super.senderId,
+    required super.read,
+    required super.deleted,
+    super.senderImage,
+    required super.senderName,
+    required super.senderUsername,
+    required super.type,
+    this.senderBio,
+    required this.followerCount,
+    required super.createdAt,
+  });
+
+  factory UnFollowNotification.fromJson(Map<String, dynamic> json) {
+    return UnFollowNotification(
+      id: json['id'],
+      message: json['message'],
+      ownerId: json['ownerId'],
+      senderId: json['senderId'],
+      read: json['read'],
+      deleted: json['deleted'],
+      senderImage: BackendUrls.replaceLocalhost(json['senderImage'] ?? ''),
+      senderName: json['senderName'],
+      senderUsername: json['senderUsername'],
+      type: json['notificationType'],
+      senderBio: json['senderBio'],
+      followerCount: json['followerCount'],
+      createdAt: DateTime.parse(json['createdAt']),
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    final data = super.toJson();
+    data.addAll({
+      'senderBio': senderBio,
+      'followerCount': followerCount,
+    });
+    return data;
+  }
+}
+
+// ignore: must_be_immutable
 class FollowNotification extends Notifications {
   final String? senderBio;
   final int followerCount;
-  final int followingCount;
 
   FollowNotification({
     required super.id,
@@ -96,7 +147,6 @@ class FollowNotification extends Notifications {
     required super.type,
     this.senderBio,
     required this.followerCount,
-    required this.followingCount,
     required super.createdAt,
   });
 
@@ -114,7 +164,6 @@ class FollowNotification extends Notifications {
       type: json['notificationType'],
       senderBio: json['senderBio'],
       followerCount: json['followerCount'],
-      followingCount: json['followingCount'],
       createdAt: DateTime.parse(json['createdAt']),
     );
   }
@@ -125,12 +174,12 @@ class FollowNotification extends Notifications {
     data.addAll({
       'senderBio': senderBio,
       'followerCount': followerCount,
-      'followingCount': followingCount,
     });
     return data;
   }
 }
 
+// ignore: must_be_immutable
 class LikeNotification extends Notifications {
   LikeNotification({
     required super.id,

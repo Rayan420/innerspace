@@ -4,14 +4,13 @@ import 'package:user_repository/src/utils/backend_urls.dart';
 
 import 'package:equatable/equatable.dart';
 
-// ignore: must_be_immutable
 class UserProfile extends Equatable {
   final int profileId;
   String? profilePicture;
-  final String? bio;
-  final String lastUpdated;
-  int followerCount = 0;
-  int followingCount = 0;
+  String? bio;
+  String lastUpdated;
+  int followerCount;
+  int followingCount;
   final int ownedSpaceCount;
   final int followedSpaceCount;
   final bool private;
@@ -24,8 +23,8 @@ class UserProfile extends Equatable {
     required this.ownedSpaceCount,
     required this.followedSpaceCount,
     required this.private,
-    required followerCount,
-    required followingCount,
+    required this.followerCount,
+    required this.followingCount,
   }) {
     profilePicture = BackendUrls.replaceLocalhost(profilePicture ?? '');
   }
@@ -34,7 +33,7 @@ class UserProfile extends Equatable {
     return UserProfile(
       profileId: json['profileId'],
       profilePicture:
-          BackendUrls.replaceLocalhost(json['profileImageUrl'] ?? ''),
+      BackendUrls.replaceLocalhost(json['profileImageUrl'] ?? ''),
       bio: json['bio'] ?? '',
       lastUpdated: json['lastUpdated'],
       followerCount: json['followerCount'],
@@ -75,14 +74,14 @@ class UserProfile extends Equatable {
 
   @override
   List<Object?> get props => [
-        profileId,
-        profilePicture,
-        bio,
-        lastUpdated,
-        followerCount,
-        followingCount,
-        ownedSpaceCount,
-        followedSpaceCount,
-        private,
-      ];
+    profileId,
+    profilePicture,
+    bio,
+    lastUpdated,
+    followerCount,
+    followingCount,
+    ownedSpaceCount,
+    followedSpaceCount,
+    private,
+  ];
 }

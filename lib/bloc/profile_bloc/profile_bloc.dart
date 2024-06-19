@@ -32,7 +32,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
-  void _onUserProfileChanged(_UserProfileChanged event, Emitter<ProfileState> emit) {
+  void _onUserProfileChanged(
+      _UserProfileChanged event, Emitter<ProfileState> emit) {
     emit(ProfileLoaded(event.user));
   }
 

@@ -64,10 +64,11 @@ class UserSearchCard extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      userRepository.user!.following!.contains(user.userId)
+                      // ignore: collection_methods_unrelated_type
+                      userRepository.user!.following.contains(user.userId)
                           ? 'Unfollow'
                           : 'Follow',
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: tWhiteColor, // Set the text color to white
                         fontSize: 14, // Adjust the font size as needed
                         fontWeight: FontWeight.w400,

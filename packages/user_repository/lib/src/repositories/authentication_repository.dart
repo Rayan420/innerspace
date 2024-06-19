@@ -17,12 +17,10 @@ enum AuthenticationStatus { authenticated, unauthenticated, unknown }
 class AuthenticationRepository {
   Token? _token;
   final UserRepository _userRepository;
-  final _controller = StreamController<
-      AuthenticationStatus>.broadcast(); // Stream of auth status
+  final NotificationRepository notificationRepository;
+  final _controller = StreamController<AuthenticationStatus>.broadcast();
   final _httpClient = http.Client();
   final String _baseUrl = BackendUrls.developmentBaseUrl;
-
-  final NotificationRepository notificationRepository;
 
   AuthenticationRepository({
     required UserRepository userRepository,
@@ -37,19 +35,19 @@ class AuthenticationRepository {
     final prefs = await SharedPreferences.getInstance();
     final accessToken = prefs.getString('accessToken');
     final refreshToken = prefs.getString('refreshToken');
-    // print(accessToken);
-    // print(refreshToken);
+
     if (accessToken != null && refreshToken != null) {
       _token = Token(access: accessToken, refresh: refreshToken);
-      // refresh the token, if refreshed token is not available, then the user is unauthenticated
       bool isRefreshed = await _refreshToken();
       if (isRefreshed) {
-        
-        notificationRepository.subscribeToSSE(
-          _userRepository.user!.userId,
-          _token!.access,
-        );
-        _controller.add(AuthenticationStatus.authenticated);
+        await _userRepository.loadUserData();
+        final user = _userRepository.user;
+        if (user != null) {
+          notificationRepository.subscribeToSSE(user.userId, _token!.access);
+          _controller.add(AuthenticationStatus.authenticated);
+        }
+      } else {
+        _controller.add(AuthenticationStatus.unauthenticated);
       }
     } else {
       _controller.add(AuthenticationStatus.unauthenticated);
@@ -183,8 +181,7 @@ class AuthenticationRepository {
         user.userId,
         _token!.access,
       );
-      print(
-          "followers: ${user.followers}, following: ${user.following}, length: ${user.followers!.length}");
+    
       _controller.add(AuthenticationStatus.authenticated);
     } catch (e) {
       log('Failed to log in: $e');

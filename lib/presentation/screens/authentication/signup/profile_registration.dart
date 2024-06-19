@@ -248,8 +248,46 @@ class _ProfileSetupState extends State<ProfileSetup> {
                         SizedBox(height: heightSize * 0.01),
                         Center(
                           child: GestureDetector(
-                            onTap: () {
-                              Navigator.popAndPushNamed(context, '/');
+                            onTap: () async {
+                              final year = yearController.text;
+                              final month = monthController.text;
+                              final day = dayController.text;
+                              final dob = '$year-$month-$day';
+                              // Check if user is less than 16 years old
+                              final dobDateTime = DateTime.tryParse(dob);
+                              if (dobDateTime == null ||
+                                  dobDateTime.isAfter(DateTime.now().subtract(
+                                      const Duration(days: 16 * 365)))) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text('Error'),
+                                      content: const Text(
+                                          'You must be at least 16 years old to use this app.'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                                return;
+                              } else {
+                                selectedImageBytes ??=
+                                    await getImageBytes('profile', 1);
+                                BlocProvider.of<SignUpBloc>(context).add(
+                                  CompleteSignUp(
+                                    selectedImageBytes!,
+                                    descriptionController.text,
+                                    dob,
+                                  ),
+                                );
+                              }
                             },
                             child: Text(
                               "Skip for now",
