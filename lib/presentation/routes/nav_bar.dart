@@ -77,6 +77,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
           Container(),
           NotificationView(
             notificationRepository: widget.notificationRepository,
+            userRepository: widget.userRepository,
           ),
           BlocProvider(
             create: (context) => ProfileBloc(

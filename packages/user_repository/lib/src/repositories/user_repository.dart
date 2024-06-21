@@ -92,4 +92,66 @@ class UserRepository {
       _controller.add(user!); // Update user data stream
     }
   }
+
+  Future<void> followUnfollowUser(User followUser) async {
+    final followed = LightweightUser(
+        userId: followUser.userId,
+        username: followUser.username,
+        firstName: followUser.firstName!,
+        lastName: followUser.lastName!);
+    print("following/unfollowing user: $followed");
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+    final responseData = await _httpClient.post(
+      Uri.parse('$_baseUrl/user/follow/${user!.userId}/${followed.userId}'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    if (responseData.statusCode == 200) {
+      user!.following.contains(followed)
+          ? user!.following.remove(followed)
+          : user!.following.add(followed);
+      user!.userProfile.followingCount = user!.following.length;
+      _controller.add(user!); // Update user data stream
+    } else {
+      print(
+          'Error: Failed to follow/unfollow user, status code: ${responseData.statusCode}');
+    }
+  }
+
+  Future<void> followUnfollowUserFromNotif(
+      int userId, String name, String username) async {
+    // split name into first and last name
+    final splitName = name.split(' ');
+
+    final followed = LightweightUser(
+        userId: userId,
+        username: username,
+        firstName: splitName[0],
+        lastName: splitName[1]);
+    print("following/unfollowing user: $followed");
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+    final responseData = await _httpClient.post(
+      Uri.parse('$_baseUrl/user/follow/${user!.userId}/${followed.userId}'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    if (responseData.statusCode == 200) {
+      user!.following.contains(followed)
+          ? user!.following.remove(followed)
+          : user!.following.add(followed);
+      user!.userProfile.followingCount = user!.following.length;
+      _controller.add(user!); // Update user data stream
+    } else {
+      print(
+          'Error: Failed to follow/unfollow user, status code: ${responseData.statusCode}');
+    }
+  }
 }

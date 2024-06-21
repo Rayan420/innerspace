@@ -3,13 +3,37 @@ import 'package:iconsax/iconsax.dart';
 import 'package:innerspace/constants/colors.dart';
 import 'package:user_repository/data.dart';
 
-class TweetFollowNotificationCard extends StatelessWidget {
+class TweetFollowNotificationCard extends StatefulWidget {
   final FollowNotification notification;
+  final UserRepository userRepository;
 
-  const TweetFollowNotificationCard({Key? key, required this.notification})
-      : super(key: key);
+  const TweetFollowNotificationCard({
+    Key? key,
+    required this.notification,
+    required this.userRepository,
+  }) : super(key: key);
 
-  // Function to calculate and determine how long ago the notification was in days rounded
+  @override
+  _TweetFollowNotificationCardState createState() =>
+      _TweetFollowNotificationCardState();
+}
+
+class _TweetFollowNotificationCardState
+    extends State<TweetFollowNotificationCard> {
+  bool _isLoading = false;
+  late bool _isFollowing;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkFollowingStatus();
+  }
+
+  void _checkFollowingStatus() {
+    _isFollowing = widget.userRepository.user!.following
+        .any((user) => user.userId == widget.notification.senderId);
+  }
+
   String calculateTimeAgo(DateTime notificationTime) {
     final currentTime = DateTime.now();
     final difference = currentTime.difference(notificationTime);
@@ -29,8 +53,7 @@ class TweetFollowNotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final notificationTime = notification
-        .createdAt; // Assuming you have this property in your FollowNotification class
+    final notificationTime = widget.notification.createdAt;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,11 +69,11 @@ class TweetFollowNotificationCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Text(notification.senderName,
+                  Text(widget.notification.senderName,
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
                   const SizedBox(width: 1.5),
-                  Text('followed you',
+                  Text('started following you',
                       style:
                           TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
                 ],
@@ -69,39 +92,67 @@ class TweetFollowNotificationCard extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 20,
-                          backgroundImage: notification.senderImage != null
-                              ? NetworkImage(notification.senderImage!)
+                          backgroundImage: widget.notification.senderImage !=
+                                  null
+                              ? NetworkImage(widget.notification.senderImage!)
                               : AssetImage('assets/images/profile1.png')
                                   as ImageProvider,
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            setState(() {
+                              _isLoading = true;
+                            });
+
+                            await widget.userRepository
+                                .followUnfollowUserFromNotif(
+                                    widget.notification.senderId,
+                                    widget.notification.senderName,
+                                    widget.notification.senderUsername);
+
+                            setState(() {
+                              _isLoading = false;
+                              _checkFollowingStatus();
+                            });
+                          },
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
-                            backgroundColor: tPrimaryColor,
-                            side: const BorderSide(color: Colors.blue),
+                            backgroundColor: _isFollowing
+                                ? Colors.grey.shade500
+                                : tPrimaryColor,
                           ),
-                          child: Text(
-                            'follow',
-                            style: TextStyle(
-                              color: tWhiteColor, // Set the text color to white
-                              fontSize: 14, // Adjust the font size as needed
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
+                          child: _isLoading
+                              ? SizedBox(
+                                  width: 14,
+                                  height: 14,
+                                  child: CircularProgressIndicator(
+                                    color: tWhiteColor,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : Text(
+                                  _isFollowing ? 'Unfollow' : 'Follow',
+                                  style: TextStyle(
+                                    color: _isFollowing
+                                        ? Colors.black
+                                        : Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
                         ),
                       ],
                     ),
-                    Text(notification.senderName,
+                    Text(widget.notification.senderName,
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w800)),
                     Text(
-                        '@${notification.senderUsername} • ${calculateTimeAgo(notificationTime)}',
+                        '@${widget.notification.senderUsername} • ${calculateTimeAgo(notificationTime)}',
                         style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey.shade600,
                             fontWeight: FontWeight.w400)),
-                    Text(notification.senderBio ?? '',
+                    Text(widget.notification.senderBio ?? '',
                         style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.w400)),
                   ],

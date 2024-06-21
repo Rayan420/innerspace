@@ -1,4 +1,6 @@
-class LightweightUser {
+import 'package:equatable/equatable.dart';
+
+class LightweightUser extends Equatable {
   final int userId;
   final String username;
   final String firstName;
@@ -28,4 +30,7 @@ class LightweightUser {
       'lastName': lastName,
     };
   }
+
+  @override
+  List<Object> get props => [userId, username, firstName, lastName];
 }

@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:innerspace/constants/colors.dart';
+import 'package:user_repository/src/models/user.dart';
 
 class ProfileScreenOther extends StatefulWidget {
-  const ProfileScreenOther({super.key, required this.isdarkmode});
+  const ProfileScreenOther({
+    Key? key,
+    required this.isdarkmode,
+    required this.user,
+    required this.isFollowing,
+    required this.onFollowChanged,
+    required this.toggleFollowStatus,
+  }) : super(key: key);
 
   final bool isdarkmode;
+  final User user;
+  final bool isFollowing;
+  final ValueChanged<bool> onFollowChanged;
+  final Future<void> Function() toggleFollowStatus;
 
   @override
   _ProfileScreenOtherState createState() => _ProfileScreenOtherState();
@@ -14,11 +26,29 @@ class ProfileScreenOther extends StatefulWidget {
 class _ProfileScreenOtherState extends State<ProfileScreenOther>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late bool _isFollowing;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _isFollowing = widget.isFollowing;
+  }
+
+  Future<void> _toggleFollowStatus() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    await widget.toggleFollowStatus();
+
+    setState(() {
+      _isLoading = false;
+      _isFollowing = !_isFollowing;
+    });
+
+    widget.onFollowChanged(_isFollowing);
   }
 
   @override
@@ -31,26 +61,20 @@ class _ProfileScreenOtherState extends State<ProfileScreenOther>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: 0,
         title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const Text(
               '@',
               style: TextStyle(fontSize: 24, fontFamily: 'Montserrat'),
             ),
             Text(
-              "user",
+              widget.user.username,
               style: const TextStyle(fontSize: 24, fontFamily: 'Poppins'),
             ),
           ],
         ),
-        actions: [
-          IconButton(
-              onPressed: null,
-              icon: Icon(
-                Iconsax.more,
-                color: widget.isdarkmode ? Colors.white : Colors.black,
-              ))
-        ],
       ),
       body: Column(
         children: [
@@ -68,11 +92,14 @@ class _ProfileScreenOtherState extends State<ProfileScreenOther>
               ),
               Positioned(
                 bottom: -60,
-                left: 20.0,
+                left: 10.0,
                 child: CircleAvatar(
-                  radius: 35,
-                  backgroundImage:
-                      const AssetImage('assets/images/profile1.png')
+                  radius: 40,
+                  backgroundImage: widget.user.userProfile.profilePicture !=
+                              null &&
+                          widget.user.userProfile.profilePicture!.isNotEmpty
+                      ? NetworkImage(widget.user.userProfile.profilePicture!)
+                      : const AssetImage('assets/images/profile1.png')
                           as ImageProvider,
                   backgroundColor: Colors.white,
                 ),
@@ -89,7 +116,7 @@ class _ProfileScreenOtherState extends State<ProfileScreenOther>
                     'Following',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
-                  Text('count',
+                  Text(widget.user.userProfile.followingCount.toString(),
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 15))
                 ],
@@ -100,7 +127,7 @@ class _ProfileScreenOtherState extends State<ProfileScreenOther>
                   const Text('Followers',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                  Text('count',
+                  Text(widget.user.userProfile.followerCount.toString(),
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 15))
                 ],
@@ -112,24 +139,34 @@ class _ProfileScreenOtherState extends State<ProfileScreenOther>
                 width: MediaQuery.of(context).size.width * 0.23,
                 height: MediaQuery.of(context).size.height * 0.047,
                 child: TextButton(
-                  onPressed: () {
-                    // Add your follow button logic here
-                  },
+                  onPressed: _toggleFollowStatus,
                   style: TextButton.styleFrom(
-                    backgroundColor: tPrimaryColor,
+                    backgroundColor:
+                        _isFollowing ? Colors.grey.shade500 : tPrimaryColor,
                     foregroundColor: tWhiteColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ), // Text color
                   ),
-                  child: const Center(
-                    child: Text(
-                      'Follow',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
+                  child: _isLoading
+                      ? const SizedBox(
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(
+                            color: tWhiteColor,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : Text(
+                          _isFollowing ? 'Unfollow' : 'Follow',
+                          style: TextStyle(
+                            color: _isFollowing && !widget.isdarkmode
+                                ? Colors.black
+                                : Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
                 ),
               ),
             ],
@@ -143,16 +180,13 @@ class _ProfileScreenOtherState extends State<ProfileScreenOther>
                 width: 15,
               ),
               Text(
-                "user name",
+                "${widget.user.firstName} ${widget.user.lastName}",
                 style: const TextStyle(
                     fontSize: 18,
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.bold),
               ),
             ],
-          ),
-          const SizedBox(
-            height: 10,
           ),
           Row(
             children: [
@@ -162,11 +196,30 @@ class _ProfileScreenOtherState extends State<ProfileScreenOther>
               Container(
                 width: MediaQuery.of(context).size.width * 0.7,
                 child: Text(
-                  "bio here",
+                  widget.user.userProfile.bio ?? '',
                   style: const TextStyle(fontSize: 14),
                   overflow: TextOverflow.clip,
                 ),
               ),
+            ],
+          ),
+          const SizedBox(height: 5),
+          Row(
+            children: [
+              const SizedBox(width: 6),
+              const Icon(Iconsax.calendar5, color: Colors.grey, size: 15),
+              const SizedBox(width: 5),
+              Text('Joined ${widget.user.dateJoined}',
+                  style: const TextStyle(fontSize: 12, color: Colors.grey)),
+            ],
+          ),
+          Row(
+            children: [
+              const SizedBox(width: 6),
+              const Icon(Iconsax.calendar5, color: Colors.grey, size: 15),
+              const SizedBox(width: 5),
+              Text('Born on ${widget.user.dateOfBirth}',
+                  style: const TextStyle(fontSize: 12, color: Colors.grey)),
             ],
           ),
           const SizedBox(

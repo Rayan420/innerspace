@@ -13,10 +13,12 @@ class Avatar extends StatefulWidget {
     super.key,
     this.selectedImageBytes,
     required this.onImageSelected,
+    required this.isDarkMode,
   });
 
   final Uint8List? selectedImageBytes;
   final Function(Uint8List?) onImageSelected;
+  final bool isDarkMode;
 
   @override
   AvatarState createState() => AvatarState();
@@ -147,7 +149,7 @@ class AvatarState extends State<Avatar> {
               children: [
                 Expanded(
                   child: InkWell(
-                    child: const Column(
+                    child: Column(
                       children: [
                         Icon(
                           Icons.image,
@@ -157,7 +159,11 @@ class AvatarState extends State<Avatar> {
                         Text(
                           "Gallery",
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 16, color: Colors.black),
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: widget.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black),
                         )
                       ],
                     ),
@@ -169,7 +175,7 @@ class AvatarState extends State<Avatar> {
                 ),
                 Expanded(
                   child: InkWell(
-                    child: const SizedBox(
+                    child: SizedBox(
                       child: Column(
                         children: [
                           Icon(
@@ -180,7 +186,11 @@ class AvatarState extends State<Avatar> {
                           Text(
                             "Camera",
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 16, color: Colors.black),
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: widget.isDarkMode
+                                    ? Colors.white
+                                    : Colors.black),
                           )
                         ],
                       ),

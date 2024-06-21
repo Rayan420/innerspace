@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:innerspace/constants/colors.dart';
 import 'package:innerspace/presentation/screens/search/user_search_card.dart';
-import 'package:user_repository/data.dart'; // Import User class
+import 'package:user_repository/data.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key, required this.userRepository})

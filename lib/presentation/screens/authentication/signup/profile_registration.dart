@@ -89,6 +89,7 @@ class _ProfileSetupState extends State<ProfileSetup> {
                     ),
                     SizedBox(height: heightSize * 0.07),
                     Avatar(
+                      isDarkMode: isDarkmode,
                       selectedImageBytes: selectedImageBytes,
                       onImageSelected: (imageBytes) {
                         setState(() {

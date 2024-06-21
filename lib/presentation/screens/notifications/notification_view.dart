@@ -5,8 +5,9 @@ import 'components/tweet_follow_notification.dart';
 import 'components/tweet_like_notification.dart';
 
 class NotificationView extends StatelessWidget {
-  const NotificationView({super.key, required this.notificationRepository});
+  const NotificationView({super.key, required this.notificationRepository, required this.userRepository});
   final NotificationRepository notificationRepository;
+  final UserRepository userRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class NotificationView extends StatelessWidget {
               if (notification is LikeNotification) {
                 return TweetLikeNotificationCard(notification: notification);
               } else if (notification is FollowNotification) {
-                return TweetFollowNotificationCard(notification: notification);
+                return TweetFollowNotificationCard(notification: notification, userRepository:userRepository ,);
               } else {
                 return Container();
               }
