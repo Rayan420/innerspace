@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:user_repository/data.dart'; // Ensure this import is correct based on your project structure
 
+// ignore: must_be_immutable
 class User extends Equatable {
   int userId;
   String username;

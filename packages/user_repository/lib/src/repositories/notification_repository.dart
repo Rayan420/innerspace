@@ -40,7 +40,7 @@ class NotificationRepository {
         if (event.data != null) {
           try {
             final data = jsonDecode(event.data!);
-
+            print('Received data: $data'); // Debug log
             if (!initialDataLoaded) {
               // Handle initial data load
               initialDataLoaded =

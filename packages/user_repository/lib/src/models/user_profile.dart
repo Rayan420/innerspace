@@ -33,7 +33,7 @@ class UserProfile extends Equatable {
     return UserProfile(
       profileId: json['profileId'],
       profilePicture:
-      BackendUrls.replaceLocalhost(json['profileImageUrl'] ?? ''),
+          BackendUrls.replaceLocalhost(json['profileImageUrl'] ?? ''),
       bio: json['bio'] ?? '',
       lastUpdated: json['lastUpdated'],
       followerCount: json['followerCount'],
@@ -65,23 +65,23 @@ class UserProfile extends Equatable {
     };
   }
 
-  static String? _encodeProfilePicture(Uint8List? profilePicture) {
-    if (profilePicture != null) {
-      return base64Encode(profilePicture);
-    }
-    return null;
-  }
+  // static String? _encodeProfilePicture(Uint8List? profilePicture) {
+  //   if (profilePicture != null) {
+  //     return base64Encode(profilePicture);
+  //   }
+  //   return null;
+  // }
 
   @override
   List<Object?> get props => [
-    profileId,
-    profilePicture,
-    bio,
-    lastUpdated,
-    followerCount,
-    followingCount,
-    ownedSpaceCount,
-    followedSpaceCount,
-    private,
-  ];
+        profileId,
+        profilePicture,
+        bio,
+        lastUpdated,
+        followerCount,
+        followingCount,
+        ownedSpaceCount,
+        followedSpaceCount,
+        private,
+      ];
 }
