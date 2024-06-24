@@ -16,12 +16,14 @@ void main() async {
   NotificationRepository notificationRepository = NotificationRepository(
     userRepository: userRepository,
   );
+  TimelineRepository timelineRepository =
+      TimelineRepository(userRepository: userRepository);
 
   // Initialize AuthenticationRepository
   AuthenticationRepository authRepository = AuthenticationRepository(
-
     userRepository: userRepository,
     notificationRepository: notificationRepository,
+    timelineRepository: timelineRepository,
   );
 
   // Initialize the Bloc observer
@@ -33,5 +35,6 @@ void main() async {
     userRepository: userRepository,
     authRepository: authRepository,
     notificationRepository: notificationRepository,
+    timelineRepository: timelineRepository,
   ));
 }

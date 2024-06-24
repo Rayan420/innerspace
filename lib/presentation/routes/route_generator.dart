@@ -26,6 +26,7 @@ class RouteGenerator {
             builder: (_) => NavigationScreen(
                   userRepository: args as UserRepository,
                   notificationRepository: args as NotificationRepository,
+                  timelineRepository: args as TimelineRepository,
                 ));
       case '/onboarding':
         return MaterialPageRoute(builder: (_) => OnBoardingScreen());

@@ -17,7 +17,12 @@ import 'package:user_repository/data.dart';
 class AppView extends StatelessWidget {
   final String flavor;
   final NotificationRepository notificationRepository;
-  const AppView({super.key, required this.flavor, required this.notificationRepository});
+  final TimelineRepository timelineRepository;
+  const AppView(
+      {super.key,
+      required this.flavor,
+      required this.notificationRepository,
+      required this.timelineRepository});
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +34,19 @@ class AppView extends StatelessWidget {
       onGenerateRoute: RouteGenerator.generateRoute,
       home: InitialScreen(
         notificationRepository: notificationRepository,
+        timelineRepository: timelineRepository,
       ),
     );
   }
 }
 
 class InitialScreen extends StatelessWidget {
-  const InitialScreen({super.key, required this.notificationRepository});
+  const InitialScreen(
+      {super.key,
+      required this.notificationRepository,
+      required this.timelineRepository});
   final NotificationRepository notificationRepository;
+  final TimelineRepository timelineRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +73,7 @@ class InitialScreen extends StatelessWidget {
               switch (state.status) {
                 case AuthenticationStatus.authenticated:
                   return NavigationScreen(
+                    timelineRepository: timelineRepository,
                     userRepository:
                         context.read<AuthenticationBloc>().userRepository,
                     notificationRepository: notificationRepository,

@@ -22,10 +22,8 @@ class NotificationRepository {
     _notificationsNotifier.value = _notifications;
   }
 
-  void subscribeToSSE(int userId, String accessToken) {
+  void subscribeToNotificationSSE(int userId, String accessToken) {
     final url = '$_baseUrl/notifications/subscribe/$userId';
-
-    bool initialDataLoaded = false; // Flag to differentiate initial data load
 
     SSEClient.subscribeToSSE(
       method: SSERequestType.GET,
@@ -37,30 +35,30 @@ class NotificationRepository {
       },
     ).listen(
       (event) {
-        if (event.data != null) {
+        // print('event id: ${event.id}'); // Debug log
+        // print('event event: ${event.event}'); // Debug log
+        if (event.data != null && event.event != null) {
           try {
             final data = jsonDecode(event.data!);
             print('Received data: $data'); // Debug log
-            if (!initialDataLoaded) {
-              // Handle initial data load
-              initialDataLoaded =
-                  true; // Set the flag to true after initial data load
-              if (data is List) {
-                final newNotifications = data
-                    .map<Notifications>((json) => _mapJsonToNotification(json))
-                    .toList();
-                _notifications.insertAll(0, newNotifications);
-              }
+
+            // Handle initial data load
+
+            if (event.event == 'initialData') {
+              final newNotifications = data
+                  .map<Notifications>((json) => _mapJsonToNotification(json))
+                  .toList();
+              _notifications.insertAll(0, newNotifications);
               _notificationsNotifier.value = List.from(_notifications);
               return; // Return early to avoid processing initial data for user repository updates
             }
 
             // Handle subsequent new notifications
-            if (data is Map<String, dynamic>) {
+            if (event.event == 'newNotification') {
               final notification = _mapJsonToNotification(data);
               if (notification is UnFollowNotification) {
-                print(
-                    'Handling UNFOLLOW notification: $notification'); // Debug log
+                // print(
+                //     'Handling UNFOLLOW notification: $notification'); // Debug log
                 _userRepository.loadUserData();
                 // Skip adding UNFOLLOW notification to the list
                 return;
@@ -97,7 +95,7 @@ class NotificationRepository {
 
   Notifications _mapJsonToNotification(Map<String, dynamic> json) {
     final notificationType = json['notificationType'];
-    print('Mapping notification type: $notificationType'); // Debug log
+    // print('Mapping notification type: $notificationType'); // Debug log
     switch (notificationType) {
       case 'FOLLOW':
         return FollowNotification.fromJson(json);

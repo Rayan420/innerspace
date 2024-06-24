@@ -1,15 +1,20 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:innerspace/constants/colors.dart';
 import 'package:innerspace/data/controller/recording/audi_recording_controller.dart';
 import 'package:innerspace/presentation/screens/record/audio_player_view.dart';
 import 'package:innerspace/presentation/screens/record/audio_recording_view.dart';
+import 'package:user_repository/data.dart';
 
 class RecordBottomSheet extends StatefulWidget {
   const RecordBottomSheet({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+    required this.timelineRepository,
+  });
 
+  final TimelineRepository timelineRepository;
   @override
   _RecordBottomSheetState createState() => _RecordBottomSheetState();
 }
@@ -62,7 +67,6 @@ class _RecordBottomSheetState extends State<RecordBottomSheet> {
     });
   }
 
-
   void _onToggleRecording() async {
     if (isRecording) {
       await audioRecorderController.pause();
@@ -90,9 +94,22 @@ class _RecordBottomSheetState extends State<RecordBottomSheet> {
     }
   }
 
-  void _onPost() {
+  void _onPost() async {
     // Implement posting logic here
-    print("Audio posted.");
+    try {
+      final done =
+          await widget.timelineRepository.createPost(audioFilePath: path);
+      if (done) {
+        audioRecorderController.delete();
+        if (mounted) {
+          print("Audio posted.");
+
+          Navigator.pop(context);
+        }
+      }
+    } catch (e) {
+      log('Error: $e');
+    }
   }
 
   @override

@@ -11,12 +11,14 @@ class App extends StatelessWidget {
   final UserRepository userRepository;
   final AuthenticationRepository authRepository;
   final NotificationRepository notificationRepository;
-
+  final TimelineRepository timelineRepository;
   const App({
     super.key,
     required this.flavor,
     required this.userRepository,
-    required this.authRepository, required this.notificationRepository,
+    required this.authRepository,
+    required this.notificationRepository,
+    required this.timelineRepository,
   });
 
   @override
@@ -40,6 +42,7 @@ class App extends StatelessWidget {
         child: AppView(
           flavor: flavor,
           notificationRepository: notificationRepository,
+          timelineRepository: timelineRepository,
         ),
       ),
     );

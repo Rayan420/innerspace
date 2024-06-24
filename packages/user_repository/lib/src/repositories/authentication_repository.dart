@@ -7,6 +7,7 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:user_repository/data.dart';
 import 'package:user_repository/src/models/models.dart';
 import 'package:user_repository/src/repositories/notification_repository.dart';
 import 'package:user_repository/src/utils/backend_urls.dart';
@@ -18,6 +19,7 @@ class AuthenticationRepository {
   Token? _token;
   final UserRepository _userRepository;
   final NotificationRepository notificationRepository;
+  final TimelineRepository timelineRepository;
   final _controller = StreamController<AuthenticationStatus>.broadcast();
   final _httpClient = http.Client();
   final String _baseUrl = BackendUrls.developmentBaseUrl;
@@ -25,6 +27,7 @@ class AuthenticationRepository {
   AuthenticationRepository({
     required UserRepository userRepository,
     required this.notificationRepository,
+    required this.timelineRepository,
   }) : _userRepository = userRepository {
     _initAuth();
   }
@@ -43,7 +46,10 @@ class AuthenticationRepository {
         await _userRepository.loadUserData();
         final user = _userRepository.user;
         if (user != null) {
-          notificationRepository.subscribeToSSE(user.userId, _token!.access);
+          timelineRepository.subscribeToTimelineSSE(
+              user.userId, _token!.access);
+          notificationRepository.subscribeToNotificationSSE(
+              user.userId, _token!.access);
           _controller.add(AuthenticationStatus.authenticated);
         }
       } else {
@@ -100,7 +106,8 @@ class AuthenticationRepository {
       _token = Token.fromJson(responseData['tokens']);
       await _userRepository.saveUserData(user); // Save user data to storage
       await _saveTokens(_token!);
-      notificationRepository.subscribeToSSE(
+      timelineRepository.subscribeToTimelineSSE(user.userId, _token!.access);
+      notificationRepository.subscribeToNotificationSSE(
         user.userId,
         _token!.access,
       );
@@ -177,11 +184,12 @@ class AuthenticationRepository {
       _token = Token.fromJson(responseData['tokens']);
       await _userRepository.saveUserData(user); // Save user data to storage
       await _saveTokens(_token!);
-      notificationRepository.subscribeToSSE(
+      timelineRepository.subscribeToTimelineSSE(user.userId, _token!.access);
+      notificationRepository.subscribeToNotificationSSE(
         user.userId,
         _token!.access,
       );
-    
+
       _controller.add(AuthenticationStatus.authenticated);
     } catch (e) {
       log('Failed to log in: $e');

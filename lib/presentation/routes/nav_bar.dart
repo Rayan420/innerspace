@@ -19,10 +19,12 @@ class NavigationScreen extends StatefulWidget {
     Key? key,
     required this.userRepository,
     required this.notificationRepository,
+    required this.timelineRepository,
   }) : super(key: key);
 
   final UserRepository userRepository;
   final NotificationRepository notificationRepository;
+  final TimelineRepository timelineRepository;
 
   @override
   State<NavigationScreen> createState() => _NavigationScreenState();
@@ -178,7 +180,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
         return RepositoryProvider<AudioRecorderController>(
           create: (context) =>
               AudioRecorderController(AudioRecorderFileHelper()),
-          child: const RecordBottomSheet(),
+          child: RecordBottomSheet(
+            timelineRepository: widget.timelineRepository,
+          ),
         );
       },
     );

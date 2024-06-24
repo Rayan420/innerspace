@@ -4,6 +4,7 @@ import 'package:user_repository/src/utils/backend_urls.dart';
 
 import 'package:equatable/equatable.dart';
 
+// ignore: must_be_immutable
 class UserProfile extends Equatable {
   final int profileId;
   String? profilePicture;
