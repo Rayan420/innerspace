@@ -9,9 +9,12 @@ class AudioRecorderController {
   final AudioRecorderFileHelper _audioRecorderFileHelper;
   AudioRecorderController(this._audioRecorderFileHelper);
 
-  final StreamController<int> _recordDurationController = StreamController<int>.broadcast()..add(0);
+  final StreamController<int> _recordDurationController =
+      StreamController<int>.broadcast()..add(0);
   Sink<int> get recordDurationInput => _recordDurationController.sink;
-  Stream<double> get amplitudeStream => _audioRecorder.onAmplitudeChanged(const Duration(milliseconds: 160)).map((amp) => amp.current);
+  Stream<double> get amplitudeStream => _audioRecorder
+      .onAmplitudeChanged(const Duration(milliseconds: 160))
+      .map((amp) => amp.current);
   Stream<RecordState> get recordStateStream => _audioRecorder.onStateChanged();
   Stream<int> get recordDurationOutput => _recordDurationController.stream;
 
@@ -35,7 +38,9 @@ class AudioRecorderController {
     }
 
     try {
-      final filePath = path.join((await _audioRecorderFileHelper.getRecordsDirectory).path, "${DateTime.now().millisecondsSinceEpoch}.m4a");
+      final filePath = path.join(
+          (await _audioRecorderFileHelper.getRecordsDirectory).path,
+          "${DateTime.now().millisecondsSinceEpoch}.m4a");
       await _audioRecorder.start(const RecordConfig(), path: filePath);
       _startTimer();
       print("Recording started. File path: $filePath");
@@ -44,7 +49,7 @@ class AudioRecorderController {
     }
   }
 
-  void resume() {
+  Future<void> resume() async {
     _startTimer();
     _audioRecorder.resume();
     print("Recording resumed.");
@@ -57,6 +62,7 @@ class AudioRecorderController {
   }
 
   Future<String?> stop(Function(RecordingModel? voiceNoteModel) onStop) async {
+    _timer?.cancel(); // Ensure the timer is canceled
     final recordPath = await _audioRecorder.stop();
     if (recordPath != null) {
       onStop(RecordingModel(
@@ -72,7 +78,6 @@ class AudioRecorderController {
     _reset();
     return recordPath;
   }
-
 
   Future<void> delete() async {
     await pause();

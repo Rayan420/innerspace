@@ -5,7 +5,9 @@ import 'package:innerspace/constants/colors.dart';
 class GlowingAvatar extends StatelessWidget {
   const GlowingAvatar({
     super.key,
+    required this.imageUrl,
   });
+  final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class GlowingAvatar extends StatelessWidget {
       repeat: true,
       child: CircleAvatar(
         radius: 50,
-        backgroundImage: AssetImage('assets/images/profile1.png'),
+        backgroundImage: NetworkImage(imageUrl),
         backgroundColor: Colors.grey.shade200,
       ),
     );

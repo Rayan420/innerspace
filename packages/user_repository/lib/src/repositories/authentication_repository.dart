@@ -46,8 +46,6 @@ class AuthenticationRepository {
         await _userRepository.loadUserData();
         final user = _userRepository.user;
         if (user != null) {
-          timelineRepository.subscribeToTimelineSSE(
-              user.userId, _token!.access);
           notificationRepository.subscribeToNotificationSSE(
               user.userId, _token!.access);
           _controller.add(AuthenticationStatus.authenticated);
@@ -106,7 +104,6 @@ class AuthenticationRepository {
       _token = Token.fromJson(responseData['tokens']);
       await _userRepository.saveUserData(user); // Save user data to storage
       await _saveTokens(_token!);
-      timelineRepository.subscribeToTimelineSSE(user.userId, _token!.access);
       notificationRepository.subscribeToNotificationSSE(
         user.userId,
         _token!.access,
@@ -184,7 +181,6 @@ class AuthenticationRepository {
       _token = Token.fromJson(responseData['tokens']);
       await _userRepository.saveUserData(user); // Save user data to storage
       await _saveTokens(_token!);
-      timelineRepository.subscribeToTimelineSSE(user.userId, _token!.access);
       notificationRepository.subscribeToNotificationSSE(
         user.userId,
         _token!.access,
@@ -208,6 +204,7 @@ class AuthenticationRepository {
       );
       await _userRepository.clearUserData(); // Clear user data from storage
       notificationRepository.unsubscribeFromSSE();
+      timelineRepository.unsubscribeFromSSE();
       await _clearToken();
       _controller.add(AuthenticationStatus.unauthenticated);
     } catch (e) {

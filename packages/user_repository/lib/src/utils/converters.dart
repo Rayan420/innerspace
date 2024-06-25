@@ -25,3 +25,28 @@ Future<File> byteDataToFile(ByteData byteData, String filename) async {
 
   return byteData;
 }
+
+
+// file to byte data
+
+Future<ByteData> fileToByteData(File file) async {
+  // Read the file as a list of bytes
+  List<int> bytes = await file.readAsBytes();
+
+  // Convert the list of bytes to a Uint8List
+  Uint8List uint8List = Uint8List.fromList(bytes);
+
+  // Convert the Uint8List to a ByteData object
+  ByteData byteData = uint8ListToByteData(uint8List);
+
+  return byteData;
+}
+
+// ByteData to Uint8List
+Uint8List byteDataToUint8List(ByteData byteData) {
+  // Create a Uint8List from the ByteData
+  Uint8List uint8List = Uint8List.view(
+      byteData.buffer, byteData.offsetInBytes, byteData.lengthInBytes);
+
+  return uint8List;
+}

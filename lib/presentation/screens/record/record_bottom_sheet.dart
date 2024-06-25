@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:innerspace/constants/colors.dart';
@@ -12,9 +11,12 @@ class RecordBottomSheet extends StatefulWidget {
   const RecordBottomSheet({
     super.key,
     required this.timelineRepository,
+    required this.userRepository,
   });
 
   final TimelineRepository timelineRepository;
+  final UserRepository userRepository;
+
   @override
   _RecordBottomSheetState createState() => _RecordBottomSheetState();
 }
@@ -25,15 +27,19 @@ class _RecordBottomSheetState extends State<RecordBottomSheet> {
   bool isPaused = false;
   bool isPlaying = false;
   String path = '';
+  int _duration = 0;
 
   @override
   void initState() {
     super.initState();
     audioRecorderController = context.read<AudioRecorderController>();
     audioRecorderController.recordDurationOutput.listen((duration) {
-      if (duration >= 60) {
-        _onDone();
-      }
+      setState(() {
+        _duration = duration;
+        if (duration >= 60) {
+          _onDone();
+        }
+      });
     });
   }
 
@@ -49,22 +55,25 @@ class _RecordBottomSheetState extends State<RecordBottomSheet> {
     print("Recording canceled.");
   }
 
-  void _onDone() async {
-    setState(() {
-      isRecording = false;
-      isPaused = false;
-    });
+  Future<void> _onDone() async {
+    if (isRecording || isPaused) {
+      await audioRecorderController.stop((recording) {
+        if (recording != null) {
+          setState(() {
+            path = recording.path;
+            isRecording = false;
+            isPaused = false;
+            isPlaying = true;
+          });
+          print("Recording manually stopped.");
+        }
+      });
 
-    final recordingPath = await audioRecorderController.stop((recording) {
-      if (recording != null) {
-        print("Recording manually stopped.");
-      }
-    });
-
-    setState(() {
-      path = recordingPath ?? ''; // Update the path state variable
-      isPlaying = true; // Switch to audio player view
-    });
+      setState(() {
+        isPlaying = true;
+      });
+      print("Recording duration on done: $_duration");
+    }
   }
 
   void _onToggleRecording() async {
@@ -77,7 +86,7 @@ class _RecordBottomSheetState extends State<RecordBottomSheet> {
       print("Recording paused.");
     } else {
       if (isPaused) {
-        audioRecorderController.resume();
+        await audioRecorderController.resume();
         setState(() {
           isRecording = true;
           isPaused = false;
@@ -94,16 +103,18 @@ class _RecordBottomSheetState extends State<RecordBottomSheet> {
     }
   }
 
-  void _onPost() async {
-    // Implement posting logic here
+  Future<void> _onPost() async {
     try {
-      final done =
-          await widget.timelineRepository.createPost(audioFilePath: path);
+      print("Posting audio. Duration: $_duration");
+
+      final done = await widget.timelineRepository.createPost(
+        audioFilePath: path,
+        duration: _duration,
+      );
       if (done) {
         audioRecorderController.delete();
         if (mounted) {
           print("Audio posted.");
-
           Navigator.pop(context);
         }
       }
@@ -127,16 +138,15 @@ class _RecordBottomSheetState extends State<RecordBottomSheet> {
           ),
         ),
         height: height,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Directionality(
           textDirection: TextDirection.ltr,
           child: AudioPlayerView(
-            audioPath: path, // Pass audio path here
+            audioPath: path,
             onCancel: _onCancel,
             onPost: _onPost,
             isDarkMode: isDarkMode,
+            imageUrl: widget.userRepository.user!.userProfile.profilePicture!,
           ),
         ),
       );
@@ -150,9 +160,7 @@ class _RecordBottomSheetState extends State<RecordBottomSheet> {
           ),
         ),
         height: height,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Directionality(
           textDirection: TextDirection.ltr,
           child: RecordingView(
@@ -161,6 +169,7 @@ class _RecordBottomSheetState extends State<RecordBottomSheet> {
             onCancel: _onCancel,
             onDone: _onDone,
             onToggleRecording: _onToggleRecording,
+            imageUrl: widget.userRepository.user!.userProfile.profilePicture!,
           ),
         ),
       );

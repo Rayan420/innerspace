@@ -9,6 +9,7 @@ class AudioPlayerView extends StatefulWidget {
   final VoidCallback onPost;
   final VoidCallback onCancel;
   final bool isDarkMode;
+  final String imageUrl;
 
   const AudioPlayerView({
     Key? key,
@@ -16,6 +17,7 @@ class AudioPlayerView extends StatefulWidget {
     required this.onPost,
     required this.onCancel,
     required this.isDarkMode,
+    required this.imageUrl,
   }) : super(key: key);
 
   @override
@@ -51,22 +53,26 @@ class _AudioPlayerViewState extends State<AudioPlayerView> {
           children: [
             TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: widget.isDarkMode ? tWhiteColor : tSecondaryColor,
+                backgroundColor:
+                    widget.isDarkMode ? tWhiteColor : tSecondaryColor,
               ),
               onPressed: widget.onCancel,
               child: Text(
                 'Cancel',
-                style: TextStyle(color: widget.isDarkMode ? tBlackColor : tWhiteColor),
+                style: TextStyle(
+                    color: widget.isDarkMode ? tBlackColor : tWhiteColor),
               ),
             ),
             TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: widget.isDarkMode ? tWhiteColor : tSecondaryColor,
+                backgroundColor:
+                    widget.isDarkMode ? tWhiteColor : tSecondaryColor,
               ),
               onPressed: widget.onPost,
               child: Text(
                 'Post',
-                style: TextStyle(color: widget.isDarkMode ? tBlackColor : tWhiteColor),
+                style: TextStyle(
+                    color: widget.isDarkMode ? tBlackColor : tWhiteColor),
               ),
             ),
           ],
@@ -106,11 +112,13 @@ class _AudioPlayerViewState extends State<AudioPlayerView> {
                 alignment: Alignment.center,
                 children: [
                   if (playing && processingState != ProcessingState.completed)
-                    const GlowingAvatar()
+                    GlowingAvatar(
+                      imageUrl: widget.imageUrl,
+                    )
                   else
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: const AssetImage('assets/images/profile1.png'),
+                      backgroundImage: NetworkImage(widget.imageUrl),
                       backgroundColor: Colors.grey.shade200,
                     ),
                   Controls(

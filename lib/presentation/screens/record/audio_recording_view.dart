@@ -12,6 +12,7 @@ class RecordingView extends StatelessWidget {
   final VoidCallback onCancel;
   final VoidCallback onDone;
   final Function() onToggleRecording;
+  final String imageUrl;
 
   const RecordingView({
     Key? key,
@@ -20,6 +21,7 @@ class RecordingView extends StatelessWidget {
     required this.onCancel,
     required this.onDone,
     required this.onToggleRecording,
+    required this.imageUrl,
   }) : super(key: key);
 
   @override
@@ -51,7 +53,7 @@ class RecordingView extends StatelessWidget {
                     size: 16,
                   ),
                   SizedBox(width: 8),
-                  Text(isRecording? 'Recording...' : 'Paused',
+                  Text(isRecording ? 'Recording...' : 'Paused',
                       style: TextStyle(
                         color: isRecording ? Colors.red : Colors.grey,
                       )),
@@ -73,11 +75,13 @@ class RecordingView extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         if (isRecording)
-          const GlowingAvatar()
+          GlowingAvatar(
+            imageUrl: imageUrl,
+          )
         else
           CircleAvatar(
             radius: 50,
-            backgroundImage: const AssetImage('assets/images/profile1.png'),
+            backgroundImage: NetworkImage(imageUrl),
             backgroundColor: Colors.grey.shade200,
           ),
         const Text(

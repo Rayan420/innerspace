@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:innerspace/app.dart';
@@ -19,18 +17,15 @@ void main() async {
     userRepository: userRepository,
   );
 
-  TimelineRepository timelineRepository = TimelineRepository(
-    userRepository: userRepository
-  );
+  TimelineRepository timelineRepository =
+      TimelineRepository(userRepository: userRepository);
 
   // Initialize AuthenticationRepository
   AuthenticationRepository authRepository = AuthenticationRepository(
-
     userRepository: userRepository,
     notificationRepository: notificationRepository,
     timelineRepository: timelineRepository,
   );
-
 
   SharedPreferencesConfig.initialize();
 

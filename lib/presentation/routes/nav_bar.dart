@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:innerspace/bloc/profile_bloc/profile_bloc.dart';
+import 'package:innerspace/bloc/timeline_bloc/timeline_bloc.dart';
 import 'package:innerspace/constants/colors.dart';
 import 'package:innerspace/data/controller/recording/audi_recording_controller.dart';
 import 'package:innerspace/data/controller/recording/audio_recorder_file_helper.dart';
@@ -72,7 +73,15 @@ class _NavigationScreenState extends State<NavigationScreen> {
       body: IndexedStack(
         index: tabIndex,
         children: [
-          const HomeScreen(),
+          BlocProvider(
+            // add an event 
+            
+            create: (context) =>
+                TimelineBloc(timelineRepository: widget.timelineRepository),
+            child: const HomeScreen(
+              
+            ),
+          ),
           SearchScreen(
             userRepository: widget.userRepository,
           ),
@@ -182,6 +191,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
               AudioRecorderController(AudioRecorderFileHelper()),
           child: RecordBottomSheet(
             timelineRepository: widget.timelineRepository,
+            userRepository: widget.userRepository,
           ),
         );
       },

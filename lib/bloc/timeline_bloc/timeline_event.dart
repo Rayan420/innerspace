@@ -1,25 +1,27 @@
 part of 'timeline_bloc.dart';
 
-sealed class TimelineEvent extends Equatable {
+abstract class TimelineEvent extends Equatable {
   const TimelineEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class TimeLineLoaded extends TimelineEvent {
+class SubscribeToTimeline extends TimelineEvent {}
+
+class LoadTimeline extends TimelineEvent {
   final List<Post> posts;
 
-  TimeLineLoaded({required this.posts});
+  const LoadTimeline({required this.posts});
 
   @override
   List<Object> get props => [posts];
 }
 
-class TimeLineUpdated extends TimelineEvent {
+class UpdatedTimeline extends TimelineEvent {
   final Post post;
 
-  TimeLineUpdated({required this.post});
+  const UpdatedTimeline({required this.post});
 
   @override
   List<Object> get props => [post];
@@ -28,8 +30,10 @@ class TimeLineUpdated extends TimelineEvent {
 class TimeLineError extends TimelineEvent {
   final String message;
 
-  TimeLineError({required this.message});
+  const TimeLineError({required this.message});
 
   @override
   List<Object> get props => [message];
 }
+
+class RefreshTimeline extends TimelineEvent {}

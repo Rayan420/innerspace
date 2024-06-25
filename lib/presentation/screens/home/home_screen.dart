@@ -1,15 +1,41 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
-import 'story_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:innerspace/bloc/timeline_bloc/timeline_bloc.dart';
+import 'package:innerspace/constants/helper.dart';
+import 'package:innerspace/presentation/screens/home/story_screen.dart';
+import 'package:innerspace/presentation/screens/home/widgets/post_card.dart';
+import 'package:innerspace/presentation/screens/home/widgets/story_item.dart';
+import 'package:just_audio/just_audio.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late AudioPlayer _audioPlayer;
+  late Stream<PlayerState> _playerStateStream;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<TimelineBloc>().add(SubscribeToTimeline());
+    _audioPlayer = AudioPlayer();
+    _playerStateStream = _audioPlayer.playerStateStream;
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Hardcoded user information and stories
+    var brightness = MediaQuery.of(context).platformBrightness;
+    var isDarkMode = brightness == Brightness.dark;
     final List<Map<String, dynamic>> stories = [
       {
         'userName': 'John Doe',
@@ -42,7 +68,6 @@ class HomeScreen extends StatelessWidget {
             'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
       },
     ];
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -65,7 +90,10 @@ class HomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => StoryScreen(stories: stories, initialIndex: index),
+                        builder: (_) => StoryScreen(
+                          stories: stories,
+                          initialIndex: index,
+                        ),
                       ),
                     );
                   },
@@ -74,227 +102,101 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 30),
-          Container(
-            height: 290,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: const Color(0xFF1c1c1c),
-              border: Border(
-                top: BorderSide(color: Color.fromARGB(255, 139, 129, 129), width: 0.2),
-                bottom: BorderSide(color: Color.fromARGB(255, 139, 129, 129), width: 0.2),
-              ),
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: 15),
-                Row(
-                  children: const [
-                    SizedBox(width: 15),
-                    CircleAvatar(
-                      radius: 17,
-                      backgroundImage: AssetImage('assets/images/zendaya.jpg'),
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      'Aarav Sharma',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                    ),
-                    SizedBox(width: 120,),
-                    Text('10 min ago', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                  ],
-                ),
-                SizedBox(height: 20,),
-                Container(
-                  width: 330,
-                  height: 160,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Color(0xFFafcdfa),
-                        Color(0xFF294266), // You can add more colors if needed
+          // New posts notification
+          BlocBuilder<TimelineBloc, TimelineState>(
+            builder: (context, state) {
+              if (state is TimelineLoaded && state.newPosts.isNotEmpty) {
+                return GestureDetector(
+                  onTap: () {
+                    context.read<TimelineBloc>().add(RefreshTimeline());
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    color: Colors.blueAccent,
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.refresh, color: Colors.white),
+                        SizedBox(width: 10),
+                        Text(
+                          'New posts available',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(15),
                   ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        
-                        bottom: 35,
-                        right:120,
-                        child: CircleAvatar(
-                      radius: 47,
-                      backgroundImage: AssetImage('assets/images/zendaya.jpg'),
-                    ),),
-                     Positioned(
-                        
-                        bottom: 10,
-                        left:20,
-                        child: Text('1:40'),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+          // Post section
+          Expanded(
+            child: BlocBuilder<TimelineBloc, TimelineState>(
+              builder: (context, state) {
+                if (state is TimelineLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(Colors.blueAccent),
                     ),
-                    Positioned(
-                        
-                        bottom: 8,
-                        left:55,
-                        child: GestureDetector(
-
-                          child: Image.asset('assets/images/audio.png',width: 25,height: 25,color: Color.fromARGB(255, 210, 209, 209),),
-                        ),
-                    ),
-                    Positioned(
-                        
-                        bottom: 10,
-                        right:20,
-                        child: Text('Innerspace',style: TextStyle(fontSize: 14),)
-                        ),
-                    Positioned(
-                      bottom: 62,
-                      right: 148,
-                      child: Opacity(
-                        opacity: 0.5, // Adjust the opacity value (0.0 to 1.0) to make the image transparent
-                        child: Image.asset(
-                          'assets/images/playbutton.png',
-                          width: 40,
-                          height: 40,
-                        ),
+                  );
+                } else if (state is TimelineLoaded && state.posts.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No posts to listen to at the moment',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: isDarkMode ? Colors.grey : Colors.black38,
                       ),
-                    )
-
-                    
-                    
-                    ],
-                  ),
-                ),
-                SizedBox(height: 10,),
-                Row(
-                  children: [
-                    SizedBox(width: 15,),
-                    UpvoteDownvoteButton(),
-
-                  ],
-                ),
-              ],
+                    ),
+                  );
+                } else if (state is TimelineLoaded) {
+                  return ListView.builder(
+                    itemCount: state.posts.length,
+                    itemBuilder: (context, index) {
+                      return PostCard(
+                          post: state.posts[index],
+                          onTapPlayPause: () =>
+                              _togglePlayPause(state.posts[index].audioUrl),
+                          isPlaying: _audioPlayer.playing &&
+                              _audioPlayer.currentIndex == index,
+                          isLoading: _audioPlayer.processingState.index >
+                              ProcessingState.loading.index);
+                    },
+                  );
+                } else if (state is TimelineError) {
+                  return Center(
+                    child: Text('Failed to load posts: ${state.message}'),
+                  );
+                }
+                return Container(); // Handle other states if necessary
+              },
             ),
           ),
         ],
       ),
     );
   }
-}
 
-class StoryItem extends StatelessWidget {
-  final Map<String, dynamic> storyData;
-  final VoidCallback onTap;
-
-  const StoryItem({
-    required this.storyData,
-    required this.onTap,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Container(
-              width: 68,
-              height: 68,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.red, width: 3.0),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: CircleAvatar(
-                  radius: 26,
-                  backgroundImage: NetworkImage(storyData['profileImageUrl']),
-                ),
-              ),
-            ),
-            const SizedBox(height: 5),
-            Text(
-              storyData['userName'],
-              style: const TextStyle(fontSize: 12),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class UpvoteDownvoteButton extends StatefulWidget {
-  @override
-  _UpvoteDownvoteButtonState createState() => _UpvoteDownvoteButtonState();
-}
-
-class _UpvoteDownvoteButtonState extends State<UpvoteDownvoteButton> {
-  int count = 0;
-  bool isUpvoted = false;
-  bool isDownvoted = false;
-
-  void toggleUpvote() {
-    setState(() {
-      if (!isUpvoted) {
-        count++;
-        isUpvoted = true;
+  void _togglePlayPause(String audioUrl) async {
+    try {
+      if (_audioPlayer.playing) {
+        await _audioPlayer.pause();
       } else {
-        count--;
-        isUpvoted = false;
+        final url = "";
+        if (audioUrl.contains("localhost")) {
+          String url = BackendUrls.replaceFromLocalhost(audioUrl);
+          await _audioPlayer.setUrl(url);
+        } else {
+          String url = BackendUrls.replaceToLocalhost(audioUrl);
+          await _audioPlayer.setUrl(url);
+        }
+        await _audioPlayer.play();
       }
-      isDownvoted = false; // Reset downvote
-    });
-  }
-
-  void toggleDownvote() {
-    setState(() {
-      if (!isDownvoted) {
-        count--;
-        isDownvoted = true;
-      } else {
-        count++;
-        isDownvoted = false;
-      }
-      isUpvoted = false; // Reset upvote
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        GestureDetector(
-          onTap: toggleUpvote,
-          child: Image.asset(
-            isUpvoted ? 'assets/images/upvoteClicked.png' : 'assets/images/upvote.png',
-            width: 30,
-            height: 30,
-          ),
-        ),
-        SizedBox(width: 5),
-        Text('$count'),
-        SizedBox(width: 10),
-        Container(
-          width: 0.4,
-          height: 25,
-          color: Colors.white,
-          ),
-          SizedBox(width: 10,),
-        GestureDetector(
-          onTap: toggleDownvote,
-          child: Image.asset(
-            isDownvoted ? 'assets/images/downvoteClicked.png' : 'assets/images/downvote.png',
-            width: 30,
-            height: 30,
-          ),
-        ),
-      ],
-    );
+    } catch (e) {
+      print('Error toggling audio: $e');
+    }
   }
 }

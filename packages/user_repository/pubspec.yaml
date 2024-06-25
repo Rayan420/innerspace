@@ -16,6 +16,7 @@ dependencies:
   intl: ^0.18.0
   shared_preferences: ^2.0.8
   flutter_client_sse: ^2.0.1
+  just_audio: ^0.9.38
 
 
 
