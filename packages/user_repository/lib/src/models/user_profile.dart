@@ -8,6 +8,7 @@ import 'package:equatable/equatable.dart';
 class UserProfile extends Equatable {
   final int profileId;
   String? profilePicture;
+  String? coverPicture;
   String? bio;
   String lastUpdated;
   int followerCount;
@@ -19,6 +20,7 @@ class UserProfile extends Equatable {
   UserProfile({
     required this.profileId,
     this.profilePicture,
+    this.coverPicture,
     this.bio,
     required this.lastUpdated,
     required this.ownedSpaceCount,
@@ -28,6 +30,7 @@ class UserProfile extends Equatable {
     required this.followingCount,
   }) {
     profilePicture = BackendUrls.replaceLocalhost(profilePicture ?? '');
+    coverPicture = BackendUrls.replaceLocalhost(coverPicture ?? '');
   }
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
@@ -35,6 +38,8 @@ class UserProfile extends Equatable {
       profileId: json['profileId'],
       profilePicture:
           BackendUrls.replaceLocalhost(json['profileImageUrl'] ?? ''),
+      coverPicture:
+          BackendUrls.replaceLocalhost(json['coverImageUrl'] ?? ''),
       bio: json['bio'] ?? '',
       lastUpdated: json['lastUpdated'],
       followerCount: json['followerCount'],
@@ -55,6 +60,7 @@ class UserProfile extends Equatable {
   Map<String, dynamic> toJson() {
     return {
       'profileId': profileId,
+      'coverImageUrl': coverPicture ,
       'profileImageUrl': profilePicture,
       'bio': bio,
       'lastUpdated': lastUpdated,
@@ -77,6 +83,7 @@ class UserProfile extends Equatable {
   List<Object?> get props => [
         profileId,
         profilePicture,
+        coverPicture,
         bio,
         lastUpdated,
         followerCount,

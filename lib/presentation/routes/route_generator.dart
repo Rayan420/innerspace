@@ -15,6 +15,7 @@ import 'package:innerspace/presentation/widgets/authentication_widgets/splash.da
 import 'package:innerspace/presentation/screens/welcome/welcome.dart';
 import 'package:innerspace/presentation/screens/welcome/on_boarding_screen.dart';
 import 'package:user_repository/data.dart';
+import 'package:innerspace/presentation/screens/profile/edit_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -34,6 +35,7 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => SplashScreen());
       case '/welcome':
         return MaterialPageRoute(builder: (_) => WelcomeScreen());
+      
       case '/forgot-password':
         return MaterialPageRoute(
           builder: (_) => BlocProvider<PasswordResetBloc>(

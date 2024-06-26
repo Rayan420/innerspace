@@ -5,6 +5,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:innerspace/bloc/authentiction_bloc/authentication_bloc.dart';
 import 'package:innerspace/bloc/profile_bloc/profile_bloc.dart';
 import 'package:innerspace/constants/colors.dart';
+import 'package:innerspace/presentation/screens/profile/edit_screen.dart';
 import 'package:user_repository/data.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -168,7 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         height: MediaQuery.of(context).size.height * 0.047,
                         child: TextButton(
                           onPressed: () {
-                            // Add your edit button logic here
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditScreen(userRepository: widget.userRepository)));
                           },
                           style: TextButton.styleFrom(
                             backgroundColor: tPrimaryColor,
