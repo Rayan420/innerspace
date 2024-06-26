@@ -8,7 +8,7 @@ import 'package:innerspace/presentation/screens/home/widgets/story_item.dart';
 import 'package:just_audio/just_audio.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -16,14 +16,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late AudioPlayer _audioPlayer;
-  late Stream<PlayerState> _playerStateStream;
+  bool isPlaying = false;
+  int? currentlyPlayingIndex;
 
   @override
   void initState() {
     super.initState();
     context.read<TimelineBloc>().add(SubscribeToTimeline());
     _audioPlayer = AudioPlayer();
-    _playerStateStream = _audioPlayer.playerStateStream;
+    _audioPlayer.playerStateStream.listen((state) {
+      if (state.processingState == ProcessingState.completed) {
+        _audioPlayer.seek(Duration.zero);
+        _audioPlayer.play();
+      }
+      setState(() {
+        isPlaying = state.playing;
+      });
+    });
   }
 
   @override
@@ -68,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
             'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
       },
     ];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -101,7 +111,6 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           ),
-          const SizedBox(height: 30),
           // New posts notification
           BlocBuilder<TimelineBloc, TimelineState>(
             builder: (context, state) {
@@ -156,14 +165,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   return ListView.builder(
                     itemCount: state.posts.length,
                     itemBuilder: (context, index) {
-                      return PostCard(
-                          post: state.posts[index],
-                          onTapPlayPause: () =>
-                              _togglePlayPause(state.posts[index].audioUrl),
-                          isPlaying: _audioPlayer.playing &&
-                              _audioPlayer.currentIndex == index,
-                          isLoading: _audioPlayer.processingState.index >
-                              ProcessingState.loading.index);
+                      return Column(
+                        children: [
+                          PostCard(
+                            post: state.posts[index],
+                            onTapPlayPause: () => _togglePlayPause(
+                                state.posts[index].audioUrl, index),
+                            isPlaying: _audioPlayer.playing &&
+                                currentlyPlayingIndex == index,
+                            isLoading: _audioPlayer.processingState ==
+                                ProcessingState.loading,
+                          ),
+                          Divider(
+                            color: Colors.grey[800],
+                            thickness: 1,
+                            height: 1,
+                          ),
+                        ],
+                      );
                     },
                   );
                 } else if (state is TimelineError) {
@@ -175,17 +194,89 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           ),
+          // Audio Progress Bar
+          if (isPlaying)
+            StreamBuilder<Duration>(
+              stream: _audioPlayer.positionStream,
+              builder: (context, snapshot) {
+                final position = snapshot.data ?? Duration.zero;
+                final duration = _audioPlayer.duration ?? Duration.zero;
+
+                return Column(
+                  children: [
+                    Slider(
+                      min: 0.0,
+                      max: duration.inMilliseconds.toDouble(),
+                      value: position.inMilliseconds
+                          .toDouble()
+                          .clamp(0.0, duration.inMilliseconds.toDouble()),
+                      onChanged: (value) {
+                        _audioPlayer
+                            .seek(Duration(milliseconds: value.toInt()));
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(_formatDuration(position)),
+                              IconButton(
+                                icon: Icon(Icons.replay_5),
+                                onPressed: () {
+                                  final newPosition =
+                                      position - Duration(seconds: 5);
+                                  _audioPlayer.seek(newPosition < Duration.zero
+                                      ? Duration.zero
+                                      : newPosition);
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(_audioPlayer.playing
+                                    ? Icons.pause
+                                    : Icons.play_arrow),
+                                onPressed: () {
+                                  _audioPlayer.playing
+                                      ? _audioPlayer.pause()
+                                      : _audioPlayer.play();
+                                },
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.forward_5),
+                                onPressed: () {
+                                  final newPosition =
+                                      position + Duration(seconds: 5);
+                                  _audioPlayer.seek(newPosition > duration
+                                      ? duration
+                                      : newPosition);
+                                },
+                              ),
+                            ],
+                          ),
+                          Text(_formatDuration(duration)),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
         ],
       ),
     );
   }
 
-  void _togglePlayPause(String audioUrl) async {
+  void _togglePlayPause(String audioUrl, int index) async {
     try {
-      if (_audioPlayer.playing) {
+      if (_audioPlayer.playing && currentlyPlayingIndex == index) {
         await _audioPlayer.pause();
       } else {
-        final url = "";
+        setState(() {
+          currentlyPlayingIndex = index;
+        });
         if (audioUrl.contains("localhost")) {
           String url = BackendUrls.replaceFromLocalhost(audioUrl);
           await _audioPlayer.setUrl(url);
@@ -198,5 +289,11 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       print('Error toggling audio: $e');
     }
+  }
+
+  String _formatDuration(Duration duration) {
+    final minutes = duration.inMinutes;
+    final seconds = duration.inSeconds % 60;
+    return '$minutes:${seconds.toString().padLeft(2, '0')}';
   }
 }

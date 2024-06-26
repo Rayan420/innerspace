@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:innerspace/presentation/screens/home/widgets/upvote_downvote_button.dart';
 import 'package:intl/intl.dart';
 import 'package:user_repository/data.dart'; // Replace with your actual data model
+import 'package:avatar_glow/avatar_glow.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
@@ -20,23 +21,25 @@ class PostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 290,
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        color: Color(0xFF1c1c1c),
-        border: Border(
-          top:
-              BorderSide(color: Color.fromARGB(255, 139, 129, 129), width: 0.2),
-          bottom:
-              BorderSide(color: Color.fromARGB(255, 139, 129, 129), width: 0.2),
-        ),
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1c1c1c),
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 3,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 15),
           Row(
             children: [
-              const SizedBox(width: 15),
               CircleAvatar(
                 radius: 17,
                 backgroundImage: NetworkImage(post.profileImageUrl),
@@ -44,18 +47,21 @@ class PostCard extends StatelessWidget {
               const SizedBox(width: 10),
               Text(
                 post.userName,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    color: Colors.white),
               ),
-              const SizedBox(width: 120),
-              Text(formatDateTime(post.timeStamp.toString()),
-                  style: const TextStyle(fontSize: 13, color: Colors.grey)),
+              const Spacer(),
+              Text(
+                formatDateTime(post.timeStamp.toString()),
+                style: const TextStyle(fontSize: 13, color: Colors.grey),
+              ),
             ],
           ),
           const SizedBox(height: 20),
           Container(
-            width: 330,
-            height: 160,
+            width: double.infinity,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
                 begin: Alignment.topCenter,
@@ -68,60 +74,41 @@ class PostCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(15),
             ),
             child: Stack(
+              alignment: Alignment.center,
               children: [
-                Positioned(
-                  bottom: 35,
-                  right: 120,
+                AvatarGlow(
+                  glowColor: Colors.blueAccent,
+                  duration: const Duration(milliseconds: 2000),
+                  repeat: true,
+                  animate: isPlaying,
                   child: CircleAvatar(
-                    radius: 47,
+                    radius: 50,
                     backgroundImage: NetworkImage(post.profileImageUrl),
+                    backgroundColor: Colors.grey.shade200,
                   ),
                 ),
-                Positioned(
-                  bottom: 8,
-                  left: 55,
-                  child: GestureDetector(
-                    onTap: onTapPlayPause,
-                    child: isLoading
-                        ? CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.blueAccent),
-                          )
-                        : Icon(
-                            isPlaying ? Icons.pause : Icons.play_arrow,
-                            size: 40,
-                            color: Colors.white,
-                          ),
-                  ),
-                ),
-                const Positioned(
-                  bottom: 10,
-                  right: 20,
-                  child: Text(
-                    'Innerspace',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                ),
-                Positioned(
-                  bottom: 62,
-                  right: 148,
-                  child: Opacity(
-                    opacity: 0.5,
-                    child: Image.asset(
-                      'assets/images/playbutton.png',
-                      width: 40,
-                      height: 40,
+                if (isLoading)
+                  const CircularProgressIndicator(
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Colors.blueAccent),
+                  )
+                else
+                  IconButton(
+                    icon: Icon(
+                      isPlaying ? Icons.pause : Icons.play_arrow,
+                      size: 40,
+                      color: Colors.white,
                     ),
+                    onPressed: onTapPlayPause,
                   ),
-                ),
               ],
             ),
           ),
           const SizedBox(height: 10),
-          const Row(
+          Row(
             children: [
-              SizedBox(width: 15),
-              UpvoteDownVote(), // Replace with your upvote/downvote widget
+              const SizedBox(width: 15),
+              const UpvoteDownVote(), // Replace with your upvote/downvote widget
             ],
           ),
         ],
