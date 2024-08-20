@@ -31,7 +31,7 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
           title: tOnBoardingTitle1,
           subtitle: tOnBoardingSubtitle1,
           counterText: tOnBoardingCounter1,
-          bgColor: tOnBoardingPage1Color,
+          bgColor: tPrimaryColor,
           height: size.height,
         ),
       ),
@@ -41,7 +41,7 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
           title: tOnBoardingTitle2,
           subtitle: tOnBoardingSubtitle2,
           counterText: tOnBoardingCounter2,
-          bgColor: tOnBoardingPage2Color,
+          bgColor: tPrimaryColor,
           height: size.height,
         ),
       ),
@@ -51,7 +51,7 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
           title: tOnBoardingTitle3,
           subtitle: tOnBoardingSubtitle3,
           counterText: tOnBoardingCounter3,
-          bgColor: tOnBoardingPage3Color,
+          bgColor: tPrimaryColor,
           height: size.height,
         ),
       ),
@@ -92,7 +92,8 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white, shape: RoundedRectangleBorder(
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
                 side: const BorderSide(),

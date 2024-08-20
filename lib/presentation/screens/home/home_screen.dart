@@ -6,9 +6,11 @@ import 'package:innerspace/presentation/screens/home/story_screen.dart';
 import 'package:innerspace/presentation/screens/home/widgets/post_card.dart';
 import 'package:innerspace/presentation/screens/home/widgets/story_item.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:user_repository/data.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.timelineRepository});
+  final TimelineRepository timelineRepository;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -45,38 +47,38 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     var brightness = MediaQuery.of(context).platformBrightness;
     var isDarkMode = brightness == Brightness.dark;
-    final List<Map<String, dynamic>> stories = [
-      {
-        'userName': 'John Doe',
-        'profileImageUrl': 'https://randomuser.me/api/portraits/men/1.jpg',
-        'audioUrl':
-            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-      },
-      {
-        'userName': 'Jane Smith',
-        'profileImageUrl': 'https://randomuser.me/api/portraits/women/1.jpg',
-        'audioUrl':
-            'https://cdn.pixabay.com/download/audio/2023/09/08/audio_b4bd5dcd5f.mp3?filename=mysterious-sci-fi-30-sec-background-music-165790.mp3',
-      },
-      {
-        'userName': 'Alice Johnson',
-        'profileImageUrl': 'https://randomuser.me/api/portraits/women/2.jpg',
-        'audioUrl':
-            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
-      },
-      {
-        'userName': 'Bob Brown',
-        'profileImageUrl': 'https://randomuser.me/api/portraits/men/2.jpg',
-        'audioUrl':
-            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
-      },
-      {
-        'userName': 'Charlie Green',
-        'profileImageUrl': 'https://randomuser.me/api/portraits/men/3.jpg',
-        'audioUrl':
-            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
-      },
-    ];
+    // final List<Map<String, dynamic>> stories = [
+    //   {
+    //     'userName': 'John Doe',
+    //     'profileImageUrl': 'https://randomuser.me/api/portraits/men/1.jpg',
+    //     'audioUrl':
+    //         'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    //   },
+    //   {
+    //     'userName': 'Jane Smith',
+    //     'profileImageUrl': 'https://randomuser.me/api/portraits/women/1.jpg',
+    //     'audioUrl':
+    //         'https://cdn.pixabay.com/download/audio/2023/09/08/audio_b4bd5dcd5f.mp3?filename=mysterious-sci-fi-30-sec-background-music-165790.mp3',
+    //   },
+    //   {
+    //     'userName': 'Alice Johnson',
+    //     'profileImageUrl': 'https://randomuser.me/api/portraits/women/2.jpg',
+    //     'audioUrl':
+    //         'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+    //   },
+    //   {
+    //     'userName': 'Bob Brown',
+    //     'profileImageUrl': 'https://randomuser.me/api/portraits/men/2.jpg',
+    //     'audioUrl':
+    //         'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+    //   },
+    //   {
+    //     'userName': 'Charlie Green',
+    //     'profileImageUrl': 'https://randomuser.me/api/portraits/men/3.jpg',
+    //     'audioUrl':
+    //         'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
+    //   },
+    // ];
 
     return Scaffold(
       appBar: AppBar(
@@ -88,29 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           // Stories section
-          Container(
-            height: 120,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: stories.length,
-              itemBuilder: (context, index) {
-                return StoryItem(
-                  storyData: stories[index],
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => StoryScreen(
-                          stories: stories,
-                          initialIndex: index,
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
+
           // New posts notification
           BlocBuilder<TimelineBloc, TimelineState>(
             builder: (context, state) {
@@ -152,13 +132,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 } else if (state is TimelineLoaded && state.posts.isEmpty) {
                   return Center(
-                    child: Text(
-                      'No posts to listen to at the moment',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: isDarkMode ? Colors.grey : Colors.black38,
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Start the conversation! ',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: isDarkMode ? Colors.grey : Colors.black38,
+                              overflow: TextOverflow.fade),
+                        ),
+                        Text(
+                          'Follow others or create your own post.',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: isDarkMode ? Colors.grey : Colors.black38,
+                              overflow: TextOverflow.fade),
+                        ),
+                      ],
                     ),
                   );
                 } else if (state is TimelineLoaded) {
@@ -168,6 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       return Column(
                         children: [
                           PostCard(
+                            timelineRepository: widget.timelineRepository,
                             post: state.posts[index],
                             onTapPlayPause: () => _togglePlayPause(
                                 state.posts[index].audioUrl, index),

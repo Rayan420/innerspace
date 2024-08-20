@@ -4,6 +4,8 @@ import 'package:innerspace/app_view.dart';
 import 'package:innerspace/bloc/authentiction_bloc/authentication_bloc.dart';
 import 'package:innerspace/bloc/internet_bloc/internet_bloc.dart';
 import 'package:innerspace/bloc/password_reset_bloc/password_reset_bloc.dart';
+import 'package:innerspace/bloc/profile_bloc/profile_bloc.dart';
+import 'package:innerspace/bloc/timeline_bloc/timeline_bloc.dart';
 import 'package:user_repository/data.dart';
 
 class App extends StatelessWidget {
@@ -37,6 +39,16 @@ class App extends StatelessWidget {
             create: (context) => PasswordResetBloc(
               authRepository: context.read<AuthenticationBloc>().authRepository,
             ),
+          ),
+          BlocProvider<ProfileBloc>(
+            create: (context) => ProfileBloc(
+              userRepository: userRepository,
+              timelineRepository: timelineRepository,
+            ),
+          ),
+          BlocProvider<TimelineBloc>(
+            create: (context) =>
+                TimelineBloc(timelineRepository: timelineRepository),
           ),
         ],
         child: AppView(

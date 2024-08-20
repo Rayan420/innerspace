@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:user_repository/data.dart';
 
 class UpvoteDownVote extends StatefulWidget {
-  const UpvoteDownVote({super.key});
-
+  const UpvoteDownVote({
+    Key? key,
+    required this.timelineRepository,
+    required this.postId,
+  }) : super(key: key);
+  final TimelineRepository timelineRepository;
+  final int postId;
   @override
-  State<UpvoteDownVote> createState() => _UpvoteDownVoteState();
+  _UpvoteDownVoteState createState() => _UpvoteDownVoteState();
 }
 
 class _UpvoteDownVoteState extends State<UpvoteDownVote> {
@@ -12,30 +18,38 @@ class _UpvoteDownVoteState extends State<UpvoteDownVote> {
   bool isUpvoted = false;
   bool isDownvoted = false;
 
-  void toggleUpvote() {
-    setState(() {
-      if (!isUpvoted) {
+  void toggleUpvote() async {
+    if (!isUpvoted) {
+      setState(() {
         count++;
         isUpvoted = true;
-      } else {
+        isDownvoted = false; // Reset downvote
+      });
+      await widget.timelineRepository.vote('upvote',
+          widget.postId); // Replace postId and senderId with actual values
+    } else {
+      setState(() {
         count--;
         isUpvoted = false;
-      }
-      isDownvoted = false; // Reset downvote
-    });
+      });
+    }
   }
 
-  void toggleDownvote() {
-    setState(() {
-      if (!isDownvoted) {
+  void toggleDownvote() async {
+    if (!isDownvoted) {
+      setState(() {
         count--;
         isDownvoted = true;
-      } else {
+        isUpvoted = false; // Reset upvote
+      });
+      await widget.timelineRepository.vote('downvote',
+          widget.postId); // Replace postId and senderId with actual values
+    } else {
+      setState(() {
         count++;
         isDownvoted = false;
-      }
-      isUpvoted = false; // Reset upvote
-    });
+      });
+    }
   }
 
   @override

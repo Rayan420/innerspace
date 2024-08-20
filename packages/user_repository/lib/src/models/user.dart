@@ -89,6 +89,26 @@ class User extends Equatable {
     };
   }
 
+// empty user
+  User.empty()
+      : userId = 0,
+        username = '',
+        email = '',
+        firstName = '',
+        lastName = '',
+        dateOfBirth = '',
+        dateJoined = '',
+        lastLogin = '',
+        userProfile = UserProfile.empty(),
+        authorities = [],
+        following = [],
+        followers = [],
+        enabled = false,
+        accountNonLocked = false,
+        credentialsNonExpired = false,
+        accountNonExpired = false;
+
+
   @override
   List<Object?> get props => [
         userId,

@@ -181,6 +181,8 @@ class FollowNotification extends Notifications {
 
 // ignore: must_be_immutable
 class LikeNotification extends Notifications {
+  final int voteCount;
+
   LikeNotification({
     required super.id,
     required super.message,
@@ -193,6 +195,7 @@ class LikeNotification extends Notifications {
     required super.senderUsername,
     required super.type,
     required super.createdAt,
+    required this.voteCount,
   });
 
   factory LikeNotification.fromJson(Map<String, dynamic> json) {
@@ -208,6 +211,7 @@ class LikeNotification extends Notifications {
       senderUsername: json['senderUsername'],
       type: json['notificationType'],
       createdAt: DateTime.parse(json['createdAt']),
+      voteCount: json['voteCount'],
     );
   }
 }

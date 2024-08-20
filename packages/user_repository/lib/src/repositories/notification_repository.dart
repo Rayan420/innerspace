@@ -99,7 +99,9 @@ class NotificationRepository {
     switch (notificationType) {
       case 'FOLLOW':
         return FollowNotification.fromJson(json);
-      case 'LIKE':
+      case 'UPVOTE':
+        return LikeNotification.fromJson(json);
+      case 'DOWNVOTE':
         return LikeNotification.fromJson(json);
       case 'UNFOLLOW':
         return UnFollowNotification.fromJson(json);

@@ -20,10 +20,33 @@ class _UserProfileChanged extends ProfileEvent {
 }
 
 class UpdateProfile extends ProfileEvent {
-  final String newProfileData;
+  final String firstName;
+  final String lastName;
+  final String bio;
+  final Uint8List? profilePicture;
+  final Uint8List? coverPicture;
 
-  const UpdateProfile(this.newProfileData);
+  UpdateProfile({
+    required this.firstName,
+    required this.lastName,
+    required this.bio,
+    this.profilePicture,
+    this.coverPicture,
+  });
+
 
   @override
-  List<Object> get props => [newProfileData];
+  List<Object> get props => [firstName, lastName, bio,];
 }
+class NewPostAdded extends ProfileEvent {
+  final Post post;
+
+  const NewPostAdded(this.post);
+
+  @override
+  List<Object> get props => [post];
+}
+
+
+// profile_event.dart
+class LoadPreviousPosts extends ProfileEvent {}

@@ -33,13 +33,25 @@ class UserProfile extends Equatable {
     coverPicture = BackendUrls.replaceLocalhost(coverPicture ?? '');
   }
 
+  // empty profile
+  UserProfile.empty()
+      : profileId = 0,
+        profilePicture = '',
+        coverPicture = '',
+        bio = '',
+        lastUpdated = '',
+        followerCount = 0,
+        followingCount = 0,
+        ownedSpaceCount = 0,
+        followedSpaceCount = 0,
+        private = false;
+
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
       profileId: json['profileId'],
       profilePicture:
           BackendUrls.replaceLocalhost(json['profileImageUrl'] ?? ''),
-      coverPicture:
-          BackendUrls.replaceLocalhost(json['coverImageUrl'] ?? ''),
+      coverPicture: BackendUrls.replaceLocalhost(json['coverImageUrl'] ?? ''),
       bio: json['bio'] ?? '',
       lastUpdated: json['lastUpdated'],
       followerCount: json['followerCount'],
@@ -60,7 +72,7 @@ class UserProfile extends Equatable {
   Map<String, dynamic> toJson() {
     return {
       'profileId': profileId,
-      'coverImageUrl': coverPicture ,
+      'coverImageUrl': coverPicture,
       'profileImageUrl': profilePicture,
       'bio': bio,
       'lastUpdated': lastUpdated,

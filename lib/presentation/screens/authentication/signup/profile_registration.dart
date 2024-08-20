@@ -2,11 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:innerspace/bloc/authentiction_bloc/authentication_bloc.dart';
 import 'package:innerspace/bloc/sign_up_bloc/sign_up_bloc.dart';
 import 'package:innerspace/constants/colors.dart';
 import 'package:innerspace/constants/image_functions.dart';
 import 'package:innerspace/constants/strings.dart';
 import 'package:innerspace/constants/theme/widgets/avatar.dart';
+import 'package:user_repository/data.dart';
 
 class ProfileSetup extends StatefulWidget {
   const ProfileSetup({
@@ -89,6 +91,12 @@ class _ProfileSetupState extends State<ProfileSetup> {
                     ),
                     SizedBox(height: heightSize * 0.07),
                     Avatar(
+                      imageUrl: context
+                          .read<AuthenticationBloc>()
+                          .userRepository
+                          .user!
+                          .userProfile
+                          .profilePicture!,
                       isDarkMode: isDarkmode,
                       selectedImageBytes: selectedImageBytes,
                       onImageSelected: (imageBytes) {

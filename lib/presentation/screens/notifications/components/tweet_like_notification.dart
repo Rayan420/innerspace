@@ -1,47 +1,56 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:user_repository/data.dart';
 
 class TweetLikeNotificationCard extends StatelessWidget {
   final LikeNotification notification;
 
-  const TweetLikeNotificationCard({super.key, required this.notification});
+  const TweetLikeNotificationCard({Key? key, required this.notification})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(
-          Iconsax.heart5,
-          color: Colors.red,
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                radius: 22,
-                backgroundImage: notification.senderImage != null
-                    ? NetworkImage(notification.senderImage!)
-                    : AssetImage('assets/images/profile1.png') as ImageProvider,
-              ),
-              Row(
-                children: [
-                  Text(notification.senderName,
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
-                  const SizedBox(width: 1.5),
-                  Text('liked your photo',
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
-                ],
-              ),
-            ],
+    bool isDownvoted = notification.type == 'DOWNVOTE';
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image.asset(
+            isDownvoted
+                ? 'assets/images/downvoteClicked.png'
+                : 'assets/images/upvote.png',
+            width: 32,
+            height: 32,
+            fit: BoxFit.cover,
           ),
-        ),
-      ],
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(
+                  leading: CircleAvatar(
+                    radius: 22,
+                    backgroundImage: NetworkImage(notification.senderImage!),
+                  ),
+                  title: Text(
+                    notification.senderName,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                  ),
+                  subtitle: Text(
+                    notification.type == 'UPVOTE'
+                        ? 'Tuned in and UPVOTED your vibes!'
+                        : 'Tuned into your audio with a different frequency.',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                  ),
+                ),
+                // Add more elements to enhance the design
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

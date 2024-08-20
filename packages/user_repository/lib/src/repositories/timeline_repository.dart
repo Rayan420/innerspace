@@ -18,8 +18,12 @@ class TimelineRepository {
   final StreamController<List<Post>> _initialPostsController =
       StreamController<List<Post>>.broadcast();
 
+  final StreamController<List<Post>> _ownPostsController =
+      StreamController<List<Post>>.broadcast();
+
   Stream<Post> get newPostStream => _newPostController.stream;
   Stream<List<Post>> get initialPostsStream => _initialPostsController.stream;
+  Stream<List<Post>> get ownPostsStream => _ownPostsController.stream;
 
   TimelineRepository({required UserRepository userRepository})
       : _userRepository = userRepository;
@@ -71,6 +75,90 @@ class TimelineRepository {
     );
   }
 
+  Future<void> vote(String voteType, int postId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+
+    if (accessToken == null) {
+      print('Access token not found');
+      return;
+    }
+
+    final url =
+        '$_baseUrl/timeline/$voteType/$postId/${_userRepository.user!.userId}';
+    final response = await http.put(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print('Vote updated successfully');
+    } else {
+      print('Failed to update vote. Status code: ${response.statusCode}');
+    }
+  }
+
+  // load the user;s own posts
+  Future<List<Post>> loadOwnPosts() async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+
+    if (accessToken == null) {
+      print('Access token not found');
+      return [];
+    }
+
+    final url = '$_baseUrl/timeline/${_userRepository.user!.userId}';
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final posts = data.map<Post>((json) => Post.fromJson(json)).toList();
+      print('Own posts: $posts');
+      _ownPostsController.add(posts);
+      return posts;
+    } else {
+      print('Failed to load posts. Status code: ${response.statusCode}');
+      return [];
+    }
+  }
+
+  Future<List<Post>> loadUserPosts(int userId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+
+    if (accessToken == null) {
+      print('Access token not found');
+      return [];
+    }
+
+    final url = '$_baseUrl/timeline/$userId';
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final posts = data.map<Post>((json) => Post.fromJson(json)).toList();
+      print('Own posts: $posts');
+      _ownPostsController.add(posts);
+      return posts;
+    } else {
+      print('Failed to load posts. Status code: ${response.statusCode}');
+      return [];
+    }
+  }
+
   // Cleanup the connection
   void unsubscribeFromSSE() {
     SSEClient.unsubscribeFromSSE();
@@ -120,6 +208,7 @@ class TimelineRepository {
     final response = await request.send();
     if (response.statusCode == 201) {
       print('Post created successfully');
+      loadOwnPosts();
       return true;
     } else {
       print('Failed to create post. Status code: ${response.statusCode}');

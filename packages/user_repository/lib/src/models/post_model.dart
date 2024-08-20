@@ -8,8 +8,9 @@ class Post extends Equatable {
   final String profileImageUrl;
   final DateTime timeStamp;
   final String? coverImageUrl;
+  final int voteCount;
 
-  Post({
+  Post( {
     required this.id,
     required this.userName,
     required this.name,
@@ -17,6 +18,7 @@ class Post extends Equatable {
     required this.audioUrl,
     required this.timeStamp,
     required this.coverImageUrl,
+    required this.voteCount,
   });
 
   Post copyWith({
@@ -36,6 +38,7 @@ class Post extends Equatable {
       name: name ?? this.name,
       timeStamp: timeStamp ?? this.timeStamp,
       coverImageUrl: coverImageUrl ?? this.coverImageUrl,
+      voteCount: voteCount,
     );
   }
 
@@ -49,6 +52,7 @@ class Post extends Equatable {
       'audioUrl': audioUrl,
       'timeStamp': timeStamp,
       'coverImageUrl': coverImageUrl,
+      "likeCount": voteCount,
     };
   }
 
@@ -63,6 +67,7 @@ class Post extends Equatable {
       audioUrl: json['audioUrl'],
       timeStamp: DateTime.parse(json['timestamp']),
       coverImageUrl: json['coverImageUrl'],
+      voteCount: json['likeCount'],
     );
   }
 

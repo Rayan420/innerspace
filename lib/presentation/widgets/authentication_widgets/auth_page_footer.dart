@@ -43,39 +43,39 @@ class AuthPageFooter extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: tFormHeight - 20),
-        ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-            side: const BorderSide(color: Colors.black12, width: 1),
-            backgroundColor: isDarkMode ? tBlackColor : Colors.white,
-            elevation: 5, // Increased elevation for a better shadow effect
-            shadowColor: Colors.black26, // Shadow color for better contrast
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: const EdgeInsets.symmetric(
-                vertical: 12, horizontal: 24), // Adjusted padding
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Image(
-                image: AssetImage(tGoogleLogo),
-                width: 24, // Adjusted width to make it look better
-                height: 24, // Added height for better proportions
-              ),
-              const SizedBox(width: 12), // Space between image and text
-              Text(
-                'Continue with Google', // Added text for better context
-                style: TextStyle(
-                  color: isDarkMode ? tWhiteColor : tBlackColor,
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
-        ),
+        // const SizedBox(height: tFormHeight - 20),
+        // ElevatedButton(
+        //   onPressed: () {},
+        //   style: ElevatedButton.styleFrom(
+        //     side: const BorderSide(color: Colors.black12, width: 1),
+        //     backgroundColor: isDarkMode ? tBlackColor : Colors.white,
+        //     elevation: 5, // Increased elevation for a better shadow effect
+        //     shadowColor: Colors.black26, // Shadow color for better contrast
+        //     shape: RoundedRectangleBorder(
+        //       borderRadius: BorderRadius.circular(10),
+        //     ),
+        //     padding: const EdgeInsets.symmetric(
+        //         vertical: 12, horizontal: 24), // Adjusted padding
+        //   ),
+        //   child: Row(
+        //     mainAxisSize: MainAxisSize.min,
+        //     children: [
+        //       const Image(
+        //         image: AssetImage(tGoogleLogo),
+        //         width: 24, // Adjusted width to make it look better
+        //         height: 24, // Added height for better proportions
+        //       ),
+        //       const SizedBox(width: 12), // Space between image and text
+        //       Text(
+        //         'Continue with Google', // Added text for better context
+        //         style: TextStyle(
+        //           color: isDarkMode ? tWhiteColor : tBlackColor,
+        //           fontSize: 16,
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
         TextButton(
           onPressed: () {
             Navigator.popAndPushNamed(context, route);

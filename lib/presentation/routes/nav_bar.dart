@@ -73,31 +73,22 @@ class _NavigationScreenState extends State<NavigationScreen> {
       body: IndexedStack(
         index: tabIndex,
         children: [
-          BlocProvider(
-            // add an event 
-            
-            create: (context) =>
-                TimelineBloc(timelineRepository: widget.timelineRepository),
-            child: const HomeScreen(
-              
-            ),
+          HomeScreen(
+            timelineRepository: widget.timelineRepository,
           ),
           SearchScreen(
             userRepository: widget.userRepository,
+            timelineRepository: widget.timelineRepository,
           ),
           Container(),
           NotificationView(
             notificationRepository: widget.notificationRepository,
             userRepository: widget.userRepository,
           ),
-          BlocProvider(
-            create: (context) => ProfileBloc(
-              userRepository: widget.userRepository,
-            ),
-            child: ProfileScreen(
-              userRepository: widget.userRepository,
-              isdarkmode: isDarkMode,
-            ),
+          ProfileScreen(
+            //userRepository: widget.userRepository,
+            isdarkmode: isDarkMode,
+            timelineRepository: widget.timelineRepository,
           ),
         ],
       ),

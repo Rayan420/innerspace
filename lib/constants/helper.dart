@@ -17,4 +17,12 @@ class BackendUrls {
     }
     return url;
   }
+
+  static replaceToIp(String url) {
+    if (url.contains('localhost')) {
+      return url.replaceFirst("localhost", "192.168.1.49");
+    } else if (url.contains("10.0.2.2")) {
+      return url.replaceFirst("10.0.2.2", "192.168.1.49");
+    }
+  }
 }

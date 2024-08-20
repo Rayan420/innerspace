@@ -23,9 +23,9 @@ class TimelineBloc extends Bloc<TimelineEvent, TimelineState> {
     // Subscribe to the initial posts stream
     _initialSubscription = _timelineRepository.initialPostsStream.listen(
       (posts) {
-        if (posts.isEmpty) {
+        if (posts.isEmpty || posts == null) {
           // Handle case where initial posts list is empty
-          add(LoadTimeline(posts: [])); // Emit an empty list
+          add(const LoadTimeline(posts: [])); // Emit an empty list
         } else {
           add(LoadTimeline(posts: posts));
         }
@@ -60,10 +60,10 @@ class TimelineBloc extends Bloc<TimelineEvent, TimelineState> {
   }
 
   void _onLoadTimeline(LoadTimeline event, Emitter<TimelineState> emit) {
-    if (event.posts.isEmpty) {
-      emit(TimelineLoaded(posts: [], newPosts: []));
+    if (event.posts.isEmpty || event.posts == null) {
+      emit(const TimelineLoaded(posts: [], newPosts: []));
     } else {
-      emit(TimelineLoaded(posts: event.posts, newPosts: []));
+      emit(TimelineLoaded(posts: event.posts, newPosts: const []));
     }
   }
 
@@ -85,7 +85,8 @@ class TimelineBloc extends Bloc<TimelineEvent, TimelineState> {
       final allPosts = List<Post>.from((state as TimelineLoaded).newPosts)
         ..addAll((state as TimelineLoaded).posts);
       emit(TimelineLoaded(
-          posts: allPosts, newPosts: [])); // Ensure newPosts is initialized
+          posts: allPosts,
+          newPosts: const [])); // Ensure newPosts is initialized
     }
   }
 

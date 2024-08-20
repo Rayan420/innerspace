@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:innerspace/bloc/profile_bloc/profile_bloc.dart';
@@ -14,10 +15,12 @@ class UserSearchCard extends StatefulWidget {
     Key? key,
     required this.user,
     required this.userRepository,
+    required this.timelineRepository,
   }) : super(key: key);
 
   final User user;
   final UserRepository userRepository;
+  final TimelineRepository timelineRepository;
 
   @override
   State<UserSearchCard> createState() => _UserSearchCardState();
@@ -25,15 +28,15 @@ class UserSearchCard extends StatefulWidget {
 
 class _UserSearchCardState extends State<UserSearchCard> {
   bool _isLoading = false;
-  late StreamSubscription<User> _userSubscription;
   bool _isFollowing = false;
+  late StreamSubscription<User> _userSubscription;
 
   @override
   void initState() {
     super.initState();
     _checkFollowingStatus();
     _userSubscription = widget.userRepository.userStream.listen((updatedUser) {
-      if (updatedUser.userId == widget.user.userId) {
+      if (updatedUser.userId == widget.user.userId && mounted) {
         setState(() {
           _checkFollowingStatus();
         });
@@ -53,10 +56,12 @@ class _UserSearchCardState extends State<UserSearchCard> {
 
     await widget.userRepository.followUnfollowUser(widget.user);
 
-    setState(() {
-      _isLoading = false;
-      _checkFollowingStatus();
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+        _checkFollowingStatus();
+      });
+    }
   }
 
   @override
@@ -70,32 +75,40 @@ class _UserSearchCardState extends State<UserSearchCard> {
     var brightness = MediaQuery.of(context).platformBrightness;
     bool isDarkMode = brightness == Brightness.dark;
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         // Navigate to the user's profile
         if (widget.user.userId == widget.userRepository.user!.userId) {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => BlocProvider(
-                create: (context) =>
-                    ProfileBloc(userRepository: widget.userRepository),
-                child: ProfileScreen(
+                create: (context) => ProfileBloc(
                   userRepository: widget.userRepository,
+                  timelineRepository: widget.timelineRepository,
+                ),
+                child: ProfileScreen(
                   isdarkmode: isDarkMode,
+                  timelineRepository: widget.timelineRepository,
                 ),
               ),
             ),
           );
         } else {
+          List<Post>? posts =
+              await widget.timelineRepository.loadUserPosts(widget.user.userId);
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => ProfileScreenOther(
+                timelineRepository: widget.timelineRepository,
+                posts: posts,
                 user: widget.user,
                 isdarkmode: isDarkMode,
                 isFollowing: _isFollowing,
                 onFollowChanged: (isFollowing) {
-                  setState(() {
-                    _isFollowing = isFollowing;
-                  });
+                  if (mounted) {
+                    setState(() {
+                      _isFollowing = isFollowing;
+                    });
+                  }
                 },
                 toggleFollowStatus: _toggleFollowStatus,
               ),
@@ -104,8 +117,7 @@ class _UserSearchCardState extends State<UserSearchCard> {
         }
       },
       child: Padding(
-        padding:
-            const EdgeInsets.symmetric(vertical: 8.0), // Space around the card
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

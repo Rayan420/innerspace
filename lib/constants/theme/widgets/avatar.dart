@@ -14,11 +14,13 @@ class Avatar extends StatefulWidget {
     this.selectedImageBytes,
     required this.onImageSelected,
     required this.isDarkMode,
+    required this.imageUrl,
   });
 
   final Uint8List? selectedImageBytes;
   final Function(Uint8List?) onImageSelected;
   final bool isDarkMode;
+  final String imageUrl;
 
   @override
   AvatarState createState() => AvatarState();
@@ -45,21 +47,21 @@ class AvatarState extends State<Avatar> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: GestureDetector(
-        onTap: () {
-          // If an image is selected, clear it; otherwise, show the image picker
-          if (_selectedImageBytes != null) {
-            // Clear the selected image
-            setState(() {
-              _selectedImageBytes = null;
-            });
-            // Notify the parent widget
-            widget.onImageSelected(null);
-          } else {
-            showImagePicker(context);
-          }
-        },
+    return GestureDetector(
+      onTap: () {
+        // If an image is selected, clear it; otherwise, show the image picker
+        if (_selectedImageBytes != null) {
+          // Clear the selected image
+          setState(() {
+            _selectedImageBytes = null;
+          });
+          // Notify the parent widget
+          widget.onImageSelected(null);
+        } else {
+          showImagePicker(context);
+        }
+      },
+      child: Center(
         child: Stack(
           children: [
             Container(
@@ -83,8 +85,7 @@ class AvatarState extends State<Avatar> {
                   fit: BoxFit.cover,
                   image: _selectedImageBytes != null
                       ? MemoryImage(_selectedImageBytes!)
-                      : const AssetImage('assets/images/profile1.png')
-                          as ImageProvider,
+                      : NetworkImage(widget.imageUrl) as ImageProvider,
                 ),
               ),
             ),

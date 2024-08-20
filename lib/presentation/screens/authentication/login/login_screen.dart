@@ -150,7 +150,8 @@ class _LogInState extends State<LogIn> {
                                       child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
                                           side: const BorderSide(
-                                              color: Colors.grey, width: 0.5), backgroundColor: tPrimaryColor,
+                                              color: Colors.grey, width: 0.5),
+                                          backgroundColor: tPrimaryColor,
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(40),
@@ -194,8 +195,8 @@ class _LogInState extends State<LogIn> {
                                                       ),
                                                     ],
                                                   ),
-                                                  duration:
-                                                      const Duration(seconds: 3),
+                                                  duration: const Duration(
+                                                      seconds: 3),
                                                 ),
                                               );
                                             }

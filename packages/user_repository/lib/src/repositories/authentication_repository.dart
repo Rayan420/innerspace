@@ -8,8 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user_repository/data.dart';
-import 'package:user_repository/src/models/models.dart';
-import 'package:user_repository/src/repositories/notification_repository.dart';
+
 import 'package:user_repository/src/utils/backend_urls.dart';
 import 'user_repository.dart';
 

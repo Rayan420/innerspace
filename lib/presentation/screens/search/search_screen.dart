@@ -4,9 +4,13 @@ import 'package:innerspace/presentation/screens/search/user_search_card.dart';
 import 'package:user_repository/data.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key, required this.userRepository})
+  const SearchScreen(
+      {Key? key,
+      required this.userRepository,
+      required this.timelineRepository})
       : super(key: key);
   final UserRepository userRepository;
+  final TimelineRepository timelineRepository;
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
@@ -112,6 +116,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               _repository.saveRecentSearch(user);
                             },
                             child: UserSearchCard(
+                              timelineRepository: widget.timelineRepository,
                               user: user,
                               userRepository: widget.userRepository,
                             ),

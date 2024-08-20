@@ -1,47 +1,61 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:innerspace/bloc/profile_bloc/profile_bloc.dart';
+import 'package:innerspace/constants/helper.dart';
+import 'dart:typed_data';
+import 'package:innerspace/constants/theme/widgets/cover_image.dart';
+import 'package:innerspace/presentation/screens/profile/profile_screen.dart';
 import 'package:user_repository/data.dart'; // Assuming you have the necessary imports
-import 'package:innerspace/constants/theme/widgets/avatar.dart'; // Import the Avatar widget
+import 'package:innerspace/constants/theme/widgets/avatar.dart';
 
 class EditScreen extends StatefulWidget {
-  const EditScreen({Key? key, required this.userRepository}) : super(key: key);
+  const EditScreen(
+      {Key? key, required this.userRepository, required this.isDarMode})
+      : super(key: key);
   final UserRepository userRepository;
+  final bool isDarMode;
   @override
   _EditScreenState createState() => _EditScreenState();
 }
 
 class _EditScreenState extends State<EditScreen> {
-  Uint8List? selectedImageBytes; // Add this variable to hold the selected image bytes
-
+  Uint8List? selectedProfileImageBytes;
+  Uint8List? selectedCoverImageBytes;
 
   TextEditingController firstNameController = TextEditingController();
-  TextEditingController LastNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
   TextEditingController bioController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    // Load user data
-    firstNameController.text = widget.userRepository.user!.firstName!;
-    LastNameController.text = widget.userRepository.user!.lastName!;
-    bioController.text = widget.userRepository.user!.userProfile.bio!;
+    final user = widget.userRepository.user!;
+    firstNameController.text = user.firstName!;
+    lastNameController.text = user.lastName!;
+    bioController.text = user.userProfile.bio!;
   }
 
+  Future<void> updateProfile() async {
+    String firstName = firstNameController.text;
+    String lastName = lastNameController.text;
+    String bio = bioController.text;
+    Uint8List? profilePicture = selectedProfileImageBytes;
+    Uint8List? coverPicture = selectedCoverImageBytes;
 
+    BlocProvider.of<ProfileBloc>(context).add(UpdateProfile(
+      firstName: firstName,
+      lastName: lastName,
+      bio: bio,
+      profilePicture: profilePicture,
+      coverPicture: coverPicture,
+    ));
 
-
-
-
-
-
-
+    Navigator.pop(context);
+  }
+  // detect if the page was popped and emit the cancel event
 
   @override
   Widget build(BuildContext context) {
-   
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -57,128 +71,128 @@ class _EditScreenState extends State<EditScreen> {
           child: Column(
             children: [
               Container(
-                height: 170,
+                height: 200,
                 width: double.infinity,
-                decoration: BoxDecoration(color: const Color.fromARGB(255, 33, 84, 126)),
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 33, 84, 126),
+                ),
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
                     Positioned(
-                      bottom: 65,
-                      right: 170,
-                      child: Image.asset(
-                        'assets/images/camera.png',
-                        color: Colors.white,
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: CoverPicture(
+                        isDarkMode: widget.isDarMode,
+                        selectedImageBytes: selectedCoverImageBytes,
+                        onImageSelected: (imageBytes) {
+                          setState(() {
+                            selectedCoverImageBytes = imageBytes;
+                          });
+                        },
+                        imageUrl: BackendUrls.replaceToIp(widget
+                            .userRepository.user!.userProfile.coverPicture!),
                       ),
                     ),
                     Positioned(
-                      bottom: -50,
-                      left: 20,
-                      child: Container(
-                        width: 100, // Set the desired width
-                        height: 100, // Set the desired height
+                        top: 115, // Adjust top position as needed
+                        left: 20, // Adjust left position as needed
                         child: Avatar(
-                          isDarkMode: true,
-                          selectedImageBytes: selectedImageBytes,
+                          isDarkMode: widget.isDarMode,
+                          selectedImageBytes: selectedProfileImageBytes,
                           onImageSelected: (imageBytes) {
                             setState(() {
-                              selectedImageBytes = imageBytes;
+                              selectedProfileImageBytes = imageBytes;
                             });
                           },
-                        ),
-                      ),
-                    ),
+                          imageUrl: BackendUrls.replaceFromLocalhost(
+                            widget.userRepository.user!.userProfile
+                                .profilePicture!,
+                          ),
+                        )),
                   ],
                 ),
               ),
-              SizedBox(height: 60,),
-              Row(
-                children: [
-                  SizedBox(width: 20,),
-                  Text('First Name',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w100),)
-                ],
-              ),
+              const SizedBox(height: 60),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0), // Add horizontal padding
-                child: TextField(
-                  controller: firstNameController,
-                  style: TextStyle(fontSize: 18), // Set the desired font size
-                  decoration: InputDecoration(
-                     // Add placeholder text
-                    contentPadding: EdgeInsets.symmetric(vertical: 1), // Set the desired content padding
-                    enabledBorder: UnderlineInputBorder( // Use UnderlineInputBorder for bottom line when not focused
-                      borderSide: BorderSide(
-                        color: Colors.grey,
-                        width: 2.0
-                      )
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'First Name',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w100),
                     ),
-                    focusedBorder: UnderlineInputBorder( // Use UnderlineInputBorder for bottom line when focused
-                      borderSide: BorderSide(
-                        color: Colors.blue,
-                        width: 2.0
-                      )
+                    TextField(
+                      controller: firstNameController,
+                      style: const TextStyle(fontSize: 18),
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(vertical: 1),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.grey, width: 2.0),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.blue, width: 2.0),
+                        ),
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Last Name',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w100),
+                    ),
+                    TextField(
+                      controller: lastNameController,
+                      style: const TextStyle(fontSize: 18),
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(vertical: 1),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.grey, width: 2.0),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.blue, width: 2.0),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Bio',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w100),
+                    ),
+                    TextField(
+                      controller: bioController,
+                      maxLines: null,
+                      maxLength: 160,
+                      style: const TextStyle(fontSize: 18),
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(vertical: 20),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.grey, width: 2.0),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.blue, width: 2.0),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: updateProfile,
+                      child: const Text('Save Changes'),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
                 ),
               ),
-              SizedBox(height: 10,),
-              Row(
-                children: [
-                  SizedBox(width: 20,),
-                  Text('Last Name',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w100),)
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0), // Add horizontal padding
-                child: TextField(
-                  controller: LastNameController,
-                  style: TextStyle(fontSize: 18), // Set the desired font size
-                  decoration: InputDecoration(
-                     // Add placeholder text
-                    contentPadding: EdgeInsets.symmetric(vertical: 1), // Set the desired content padding
-                    enabledBorder: UnderlineInputBorder( // Use UnderlineInputBorder for bottom line when not focused
-                      borderSide: BorderSide(
-                        color: Colors.grey,
-                        width: 2.0
-                      )
-                    ),
-                    focusedBorder: UnderlineInputBorder( // Use UnderlineInputBorder for bottom line when focused
-                      borderSide: BorderSide(
-                        color: Colors.blue,
-                        width: 2.0
-                      )
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10,),
-              Row(
-                children: [
-                  SizedBox(width: 20,),
-                  Text('Bio',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w100),)
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: TextField(
-                  controller: bioController,
-                  maxLines: null, 
-                  maxLength: 160,
-                  style: TextStyle(fontSize: 18),
-                  decoration: InputDecoration(
-                    // Provide a hint text
-                    contentPadding: EdgeInsets.symmetric(vertical: 20), // Adjust content padding
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 2.0),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 2.0),
-                    ),
-                  ),
-                
-                ),
-              ),
-          
             ],
           ),
         ),

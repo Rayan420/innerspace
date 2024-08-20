@@ -33,13 +33,13 @@ const tEmail = "Email";
 const tPassword = "Password";
 const tConfirmPassword = "Confirm Password";
 const tFullName = "Full Name";
-const tSignUpWith = "Or Sign Up With ";
+const tSignUpWith = "Or ";
 const tAlreadyHaveAnAccount = "Already have an account? ";
 
 // login screen texts
 const tLoginTitle = "Welcome Back to Your InnerSpace!";
 const tLoginSubtitle = "Let's get back to the conversation 🎙";
-const tSignInWith = "Or Sign In With";
+const tSignInWith = "Or";
 const tDontHaveAnAccount = "Don't have an account? ";
 
 // forgot password screen texts

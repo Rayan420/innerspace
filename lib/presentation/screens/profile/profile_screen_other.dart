@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:innerspace/constants/colors.dart';
+import 'package:innerspace/constants/helper.dart';
+import 'package:innerspace/presentation/screens/home/widgets/post_card.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:user_repository/data.dart';
 import 'package:user_repository/src/models/user.dart';
 
 class ProfileScreenOther extends StatefulWidget {
@@ -11,6 +15,8 @@ class ProfileScreenOther extends StatefulWidget {
     required this.isFollowing,
     required this.onFollowChanged,
     required this.toggleFollowStatus,
+    required this.posts,
+    required this.timelineRepository,
   }) : super(key: key);
 
   final bool isdarkmode;
@@ -18,6 +24,8 @@ class ProfileScreenOther extends StatefulWidget {
   final bool isFollowing;
   final ValueChanged<bool> onFollowChanged;
   final Future<void> Function() toggleFollowStatus;
+  final List<Post>? posts;
+  final TimelineRepository timelineRepository;
 
   @override
   _ProfileScreenOtherState createState() => _ProfileScreenOtherState();
@@ -28,33 +36,62 @@ class _ProfileScreenOtherState extends State<ProfileScreenOther>
   late TabController _tabController;
   late bool _isFollowing;
   bool _isLoading = false;
-
+  late AudioPlayer _audioPlayer;
+  bool isPlaying = false;
+  int? currentlyPlayingIndex;
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 1, vsync: this);
     _isFollowing = widget.isFollowing;
-  }
-
-  Future<void> _toggleFollowStatus() async {
-    setState(() {
-      _isLoading = true;
+    _audioPlayer = AudioPlayer();
+    _audioPlayer.playerStateStream.listen((state) {
+      if (state.processingState == ProcessingState.completed) {
+        _audioPlayer.seek(Duration.zero);
+        _audioPlayer.play();
+      }
+      if (mounted) {
+        // Check if the widget is mounted before calling setState
+        setState(() {
+          isPlaying = state.playing;
+        });
+      }
     });
-
-    await widget.toggleFollowStatus();
-
-    setState(() {
-      _isLoading = false;
-      _isFollowing = !_isFollowing;
-    });
-
-    widget.onFollowChanged(_isFollowing);
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _audioPlayer.dispose();
     super.dispose();
+  }
+
+  Future<void> _toggleFollowStatus() async {
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
+
+    try {
+      await widget.toggleFollowStatus();
+
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _isFollowing = !_isFollowing; // Toggle the following status
+        });
+      }
+
+      widget.onFollowChanged(_isFollowing);
+    } catch (e) {
+      // Handle error, e.g., show a snackbar
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+      print('Error toggling follow status: $e');
+    }
   }
 
   @override
@@ -82,11 +119,11 @@ class _ProfileScreenOtherState extends State<ProfileScreenOther>
             clipBehavior: Clip.none,
             children: [
               Container(
-                height: 180,
-                decoration: const BoxDecoration(
+                height: MediaQuery.of(context).size.height * 0.17,
+                decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/images/cover_image.jpg'),
-                    fit: BoxFit.cover,
+                    image: NetworkImage(widget.user.userProfile.coverPicture!),
+                    fit: BoxFit.fill,
                   ),
                 ),
               ),
@@ -95,12 +132,8 @@ class _ProfileScreenOtherState extends State<ProfileScreenOther>
                 left: 10.0,
                 child: CircleAvatar(
                   radius: 40,
-                  backgroundImage: widget.user.userProfile.profilePicture !=
-                              null &&
-                          widget.user.userProfile.profilePicture!.isNotEmpty
-                      ? NetworkImage(widget.user.userProfile.profilePicture!)
-                      : const AssetImage('assets/images/profile1.png')
-                          as ImageProvider,
+                  backgroundImage:
+                      NetworkImage(widget.user.userProfile.profilePicture!),
                   backgroundColor: Colors.white,
                 ),
               ),
@@ -231,21 +264,155 @@ class _ProfileScreenOtherState extends State<ProfileScreenOther>
             unselectedLabelColor: Colors.grey,
             indicatorColor: tPrimaryColor,
             tabs: const [
-              Tab(text: 'Tweets'),
-              Tab(text: 'Replies'),
+              Tab(text: 'Their Sound'),
             ],
           ),
           Expanded(
             child: TabBarView(
               controller: _tabController,
               children: [
-                const Center(child: Text('Tweets content goes here')),
-                const Center(child: Text('Replies content goes here')),
+                // generate the Posts
+                widget.posts!.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No sound available yet.',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: widget.isdarkmode
+                                ? Colors.grey
+                                : Colors.black38,
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: widget.posts!.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              PostCard(
+                                timelineRepository: widget.timelineRepository,
+                                post: widget.posts![index],
+                                onTapPlayPause: () => _togglePlayPause(
+                                    widget.posts![index].audioUrl, index),
+                                isPlaying: _audioPlayer.playing &&
+                                    currentlyPlayingIndex == index,
+                                isLoading: _audioPlayer.processingState ==
+                                    ProcessingState.loading,
+                              ),
+                              Divider(
+                                color: Colors.grey[800],
+                                thickness: 1,
+                                height: 1,
+                              ),
+                            ],
+                          );
+                        },
+                      ),
               ],
             ),
-          )
+          ),
+          if (isPlaying)
+            StreamBuilder<Duration>(
+              stream: _audioPlayer.positionStream,
+              builder: (context, snapshot) {
+                final position = snapshot.data ?? Duration.zero;
+                final duration = _audioPlayer.duration ?? Duration.zero;
+
+                return Column(
+                  children: [
+                    Slider(
+                      min: 0.0,
+                      max: duration.inMilliseconds.toDouble(),
+                      value: position.inMilliseconds
+                          .toDouble()
+                          .clamp(0.0, duration.inMilliseconds.toDouble()),
+                      onChanged: (value) {
+                        _audioPlayer
+                            .seek(Duration(milliseconds: value.toInt()));
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(_formatDuration(position)),
+                              IconButton(
+                                icon: Icon(Icons.replay_5),
+                                onPressed: () {
+                                  final newPosition =
+                                      position - Duration(seconds: 5);
+                                  _audioPlayer.seek(newPosition < Duration.zero
+                                      ? Duration.zero
+                                      : newPosition);
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(_audioPlayer.playing
+                                    ? Icons.pause
+                                    : Icons.play_arrow),
+                                onPressed: () {
+                                  _audioPlayer.playing
+                                      ? _audioPlayer.pause()
+                                      : _audioPlayer.play();
+                                },
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.forward_5),
+                                onPressed: () {
+                                  final newPosition =
+                                      position + Duration(seconds: 5);
+                                  _audioPlayer.seek(newPosition > duration
+                                      ? duration
+                                      : newPosition);
+                                },
+                              ),
+                            ],
+                          ),
+                          Text(_formatDuration(duration)),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
         ],
       ),
     );
+  }
+
+  void _togglePlayPause(String audioUrl, int index) async {
+    try {
+      if (_audioPlayer.playing && currentlyPlayingIndex == index) {
+        await _audioPlayer.pause();
+      } else {
+        if (mounted) {
+          setState(() {
+            currentlyPlayingIndex = index;
+          });
+        }
+        if (audioUrl.contains("localhost")) {
+          String url = BackendUrls.replaceFromLocalhost(audioUrl);
+          await _audioPlayer.setUrl(url);
+        } else {
+          String url = BackendUrls.replaceToLocalhost(audioUrl);
+          await _audioPlayer.setUrl(url);
+        }
+        await _audioPlayer.play();
+      }
+    } catch (e) {
+      print('Error toggling audio: $e');
+    }
+  }
+
+  String _formatDuration(Duration duration) {
+    final minutes = duration.inMinutes;
+    final seconds = duration.inSeconds % 60;
+    return '$minutes:${seconds.toString().padLeft(2, '0')}';
   }
 }

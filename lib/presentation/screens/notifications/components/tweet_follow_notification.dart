@@ -73,9 +73,12 @@ class _TweetFollowNotificationCardState
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
                   const SizedBox(width: 1.5),
-                  Text('started following you',
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.w400)),
+                  Text(
+                    'started following you',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
                 ],
               ),
               const SizedBox(height: 3),

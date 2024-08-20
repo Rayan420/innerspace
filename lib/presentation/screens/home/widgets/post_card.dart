@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:innerspace/constants/helper.dart';
 import 'package:innerspace/presentation/screens/home/widgets/upvote_downvote_button.dart';
 import 'package:intl/intl.dart';
 import 'package:user_repository/data.dart'; // Replace with your actual data model
@@ -9,6 +12,7 @@ class PostCard extends StatelessWidget {
   final VoidCallback onTapPlayPause;
   final bool isPlaying;
   final bool isLoading;
+  final TimelineRepository timelineRepository;
 
   const PostCard({
     required this.post,
@@ -16,6 +20,7 @@ class PostCard extends StatelessWidget {
     required this.isPlaying,
     required this.isLoading,
     Key? key,
+    required this.timelineRepository,
   }) : super(key: key);
 
   @override
@@ -42,7 +47,8 @@ class PostCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 17,
-                backgroundImage: NetworkImage(post.profileImageUrl),
+                backgroundImage: NetworkImage(
+                    BackendUrls.replaceFromLocalhost(post.profileImageUrl)),
               ),
               const SizedBox(width: 10),
               Text(
@@ -83,7 +89,8 @@ class PostCard extends StatelessWidget {
                   animate: isPlaying,
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundImage: NetworkImage(post.profileImageUrl),
+                    backgroundImage: NetworkImage(
+                        BackendUrls.replaceFromLocalhost(post.profileImageUrl)),
                     backgroundColor: Colors.grey.shade200,
                   ),
                 ),
@@ -108,7 +115,10 @@ class PostCard extends StatelessWidget {
           Row(
             children: [
               const SizedBox(width: 15),
-              const UpvoteDownVote(), // Replace with your upvote/downvote widget
+              UpvoteDownVote(
+                timelineRepository: timelineRepository,
+                postId: post.id,
+              ), // Replace with your upvote/downvote widget
             ],
           ),
         ],

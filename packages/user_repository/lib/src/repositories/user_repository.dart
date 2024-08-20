@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'package:http_parser/http_parser.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:user_repository/src/models/models.dart';
 import 'package:http/http.dart' as http;
@@ -152,6 +155,60 @@ class UserRepository {
     } else {
       print(
           'Error: Failed to follow/unfollow user, status code: ${responseData.statusCode}');
+    }
+  }
+
+  Future<void> updateUserProfile(
+      String f, String l, String b, Uint8List? pp, Uint8List? cp) async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+
+    final request = http.MultipartRequest(
+        'PUT', Uri.parse('$_baseUrl/profile/update/${user!.userId}'))
+      ..headers['Authorization'] = 'Bearer $accessToken';
+
+    request.fields['firstName'] = f;
+    request.fields['lastName'] = l;
+    request.fields['bio'] = b;
+
+    if (pp != null) {
+      request.files.add(http.MultipartFile.fromBytes(
+        'profile', pp,
+        filename: '${user!.username}.jpg',
+        contentType: MediaType('image', 'jpeg'), // Specify content type here
+      ));
+    }
+
+    if (cp != null) {
+      request.files.add(http.MultipartFile.fromBytes(
+        'cover', cp,
+        filename: 'coverPicture.jpg',
+        contentType: MediaType('image', 'jpeg'), // Specify content type here
+      ));
+    }
+
+    // Send the request here
+    final response = await request.send();
+
+    // Handle response as needed
+    if (response.statusCode == 200) {
+      // Handle success
+      // decode the response
+      final data = await response.stream.bytesToString();
+      final userJson = json.decode(data);
+      user!.firstName = userJson['firstName'];
+      user!.lastName = userJson['lastName'];
+      user!.userProfile.bio = userJson['bio'];
+      user!.userProfile.profilePicture =
+          BackendUrls.replaceLocalhost(userJson['profileImageUrl']);
+      user!.userProfile.coverPicture =
+          BackendUrls.replaceLocalhost(userJson['coverImageUrl']);
+      print("THE UPDATED DATA FROM THE CALL IS: $userJson");
+      _controller.add(user!);
+      // update user data
+      loadUserData();
+    } else {
+      // Handle error
     }
   }
 }
